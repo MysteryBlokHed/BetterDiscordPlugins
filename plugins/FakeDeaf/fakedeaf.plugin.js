@@ -2,7 +2,7 @@
  * @name FakeDeaf
  * @author Adam Thompson-Sharpe
  * @description Fake being deafened or muted on Discord while still being able to talk.
- * @version 0.2.0
+ * @version 0.2.1
  * @authorId 309628148201553920
  * @source https://github.com/MysteryBlokHed/BetterDiscordPlugins/blob/master/plugins/FakeDeaf
  * @updateUrl https://raw.githubusercontent.com/MysteryBlokHed/BetterDiscordPlugins/master/plugins/FakeDeaf/fakedeaf.plugin.js
@@ -89,6 +89,25 @@ module.exports = class FakeDeaf {
     window.fakeDeafEnabled = false
   }
 
+  updateNewJoinMuteMessage() {
+    if (this.newJoinMute) {
+      let section = document.querySelector('section')
+
+      let message = document.createElement('div')
+      message.className = 'new-join-mute-message'
+      message.innerText = 'New Join Mute Enabled'
+      message.style.backgroundColor = 'var(--text-positive)'
+      message.style.padding = '5px'
+      message.style.color = 'white'
+      message.style.textAlign = 'center'
+
+      section.prepend(message)
+    } else {
+      let message = document.querySelector('div.new-join-mute-message')
+      if (message) message.outerHTML = ''
+    }
+  }
+
   getSettingsPanel() {
     let template = document.createElement('template')
     let div = document.createElement('div')
@@ -146,6 +165,7 @@ module.exports = class FakeDeaf {
       this.newJoinMute = newJoinMute.checked
       window.fakeDeafEnabled = false
       window.fakeDeafEnabled = true
+      this.updateNewJoinMuteMessage()
     }
 
     checkmark = document.createElement('span')
