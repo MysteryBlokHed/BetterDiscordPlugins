@@ -18,7 +18,9 @@ muted/deafened will appear next to your name under the voice channel, but not
 at the bottom of your screen. If you want to actually mute/deafen, then
 make sure the buttons at the bottom say you're muted/deafened.\
 To mute yourself for people who newly join a VC, just toggle the setting in
-the settings page. The feature will automatically be activated.
+the settings page. The feature will automatically be activated.\
+**Note: If you join a new VC with the new join mute enabled, nobody will be able to
+hear you. Toggle the option off and back on from the settings while in the VC to re-activate it.**
 
 ## Problems
 
