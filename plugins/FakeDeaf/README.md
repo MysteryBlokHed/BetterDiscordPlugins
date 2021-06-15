@@ -4,6 +4,12 @@ Fake being deafened or muted on Discord while still being able to talk.
 
 Modified from the [Gist](https://gist.github.com/MysteryBlokHed/4cc0ad750e5e6d9b19855da5d056e639).
 
+## Features
+
+- Talk while appearing muted
+- Talk/hear while appearing deafened
+- Mute yourself only for people who newly join a VC
+
 ## Problems
 
 In my testing, you aren't able to hear other users while fake deafened unless

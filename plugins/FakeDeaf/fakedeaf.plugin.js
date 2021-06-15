@@ -2,17 +2,17 @@
  * @name FakeDeaf
  * @author Adam Thompson-Sharpe
  * @description Fake being deafened or muted on Discord while still being able to talk.
- * @version 0.1.0
+ * @version 0.2.0
  * @authorId 309628148201553920
  * @source https://github.com/MysteryBlokHed/BetterDiscordPlugins/blob/master/plugins/FakeDeaf
  * @updateUrl https://raw.githubusercontent.com/MysteryBlokHed/BetterDiscordPlugins/master/plugins/FakeDeaf/fakedeaf.plugin.js
  */
 
 module.exports = class FakeDeaf {
-  // Changed in settings pannel
-  // Whether to fake mute/deafen
+  // Changed in settings panel
   fakeMute = true
   fakeDeafen = true
+  newJoinMute = false
 
   encoder = new TextEncoder('utf-8')
   decoder = new TextDecoder('utf-8')
@@ -32,11 +32,11 @@ module.exports = class FakeDeaf {
     let apply_handle = {
       apply: (target, thisArg, args) => {
         if (!window.fakeDeafEnabled) {
-          target.apply(thisArg, args)
-          return
+          return target.apply(thisArg, args)
         }
 
         let data = args[0]
+        // ----- Mute/Deafen -----
         if (
           (this.fakeMute || this.fakeDeafen) &&
           data.toString() === '[object ArrayBuffer]'
@@ -61,6 +61,16 @@ module.exports = class FakeDeaf {
             console.log('Updated self_mute and self_deaf')
           }
         }
+        // ----- New Join Mute -----
+        if (this.newJoinMute) {
+          try {
+            let json = JSON.parse(data)
+            if ('d' in json && 'speaking' in json['d']) {
+              json['d']['speaking'] = 0
+              data = JSON.stringify(json)
+            }
+          } catch {}
+        }
         return target.apply(thisArg, [data])
       },
     }
@@ -84,6 +94,7 @@ module.exports = class FakeDeaf {
     let div = document.createElement('div')
     div.innerHTML = `<style>.checkbox-container{display:block;position:relative;padding-left:35px;margin-bottom:12px;cursor:pointer;font-size:22px;font-family:Arial,Helvetica,sans-serif;color:#fff;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.checkbox-container input{position:absolute;opacity:0;cursor:pointer;height:0;width:0}.checkmark{position:absolute;top:0;left:0;height:25px;width:25px;background-color:#eee}.checkbox-container:hover input~.checkmark{background-color:#ccc}.checkbox-container input:checked~.checkmark{background-color:#2196f3}.checkmark:after{content:'';position:absolute;display:none}.checkbox-container input:checked~.checkmark:after{display:block}.checkbox-container .checkmark:after{left:9px;top:5px;width:5px;height:10px;border:solid #fff;border-width:0 3px 3px 0;-webkit-transform:rotate(45deg);-ms-transform:rotate(45deg);transform:rotate(45deg)}</style>`
 
+    // --- Fake Mute Options ---
     let fakeMuteLabel = document.createElement('label')
     fakeMuteLabel.className = 'checkbox-container'
     fakeMuteLabel.innerText = 'Fake Mute'
@@ -102,6 +113,7 @@ module.exports = class FakeDeaf {
 
     div.appendChild(fakeMuteLabel)
 
+    // --- Fake Deafen Options ---
     let fakeDeafenLabel = document.createElement('label')
     fakeDeafenLabel.className = 'checkbox-container'
     fakeDeafenLabel.innerText = 'Fake Deafen'
@@ -119,6 +131,30 @@ module.exports = class FakeDeaf {
     fakeDeafenLabel.appendChild(checkmark)
 
     div.appendChild(fakeDeafenLabel)
+
+    // --- Speaking Indicator Options ---
+    let newJoinMuteLabel = document.createElement('label')
+    newJoinMuteLabel.className = 'checkbox-container'
+    newJoinMuteLabel.innerText = 'Mute Yourself For New VC Joiners'
+
+    let newJoinMute = document.createElement('input')
+    newJoinMute.type = 'checkbox'
+    newJoinMute.name = 'newJoinMute'
+    newJoinMute.id = 'newJoinMute'
+    newJoinMute.checked = this.newJoinMute
+    newJoinMute.onchange = () => {
+      this.newJoinMute = newJoinMute.checked
+      window.fakeDeafEnabled = false
+      window.fakeDeafEnabled = true
+    }
+
+    checkmark = document.createElement('span')
+    checkmark.className = 'checkmark'
+    newJoinMuteLabel.appendChild(newJoinMute)
+    newJoinMuteLabel.appendChild(checkmark)
+
+    div.appendChild(newJoinMuteLabel)
+
     template.content.appendChild(div)
 
     return template.content.firstChild
