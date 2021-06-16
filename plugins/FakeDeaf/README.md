@@ -24,6 +24,13 @@ hear you. Toggle the option off and back on from the settings while in the VC to
 
 ## Problems
 
+### VC With Mobile Users
+
+For some reason, mobile users can still see the circle around your profile
+picture while you're fake muted, but the desktop client can't.
+
+### Hearing Others
+
 Sometimes you aren't able to hear users talk while you're fake deafened if everybody
 but the speaker is actually deafened. This has happened before, but I haven't
 been able to reproduce it.\
