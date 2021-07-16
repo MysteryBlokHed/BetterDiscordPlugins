@@ -19,8 +19,15 @@ at the bottom of your screen. If you want to actually mute/deafen, then
 make sure the buttons at the bottom say you're muted/deafened.\
 To mute yourself for people who newly join a VC, just toggle the setting in
 the settings page. The feature will automatically be activated.\
-**Note: If you join a new VC with the new join mute enabled, nobody will be able to
+**To make the new join mute work, you must say something before enabling it.
+If you join a new VC with the new join mute enabled, nobody will be able to
 hear you. Toggle the option off and back on from the settings while in the VC to re-activate it.**
+
+### Hotkeys
+
+- `F9` - Toggle fake mute
+- `F10` - Toggle fake deafen
+- `F11` - Toggle mute for new players
 
 ## Problems
 
