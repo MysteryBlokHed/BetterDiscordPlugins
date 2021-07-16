@@ -13,6 +13,9 @@ module.exports = class FakeDeaf {
   fakeMute = true
   fakeDeafen = true
   newJoinMute = false
+  fakeMuteToggleKey = 'F9'
+  fakeDeafenToggleKey = 'F10'
+  newJoinMuteToggleKey = 'F11'
 
   encoder = new TextEncoder('utf-8')
   decoder = new TextDecoder('utf-8')
@@ -26,12 +29,42 @@ module.exports = class FakeDeaf {
   settings = document.createElement('template')
 
   load() {
-    if (!window.fakeDeafEnabled) window.fakeDeafEnabled = false
+    if (!this.fakeDeafEnabled) this.fakeDeafEnabled = false
     this.settings.innerHTML = `<div><style>.checkbox-container{display:block;position:relative;padding-left:35px;margin-bottom:12px;cursor:pointer;font-size:22px;font-family:Arial,Helvetica,sans-serif;color:#fff;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.checkbox-container input{position:absolute;opacity:0;cursor:pointer;height:0;width:0}.checkmark{position:absolute;top:0;left:0;height:25px;width:25px;background-color:#eee}.checkbox-container:hover input~.checkmark{background-color:#ccc}.checkbox-container input:checked~.checkmark{background-color:#2196f3}.checkmark:after{content:'';position:absolute;display:none}.checkbox-container input:checked~.checkmark:after{display:block}.checkbox-container .checkmark:after{left:9px;top:5px;width:5px;height:10px;border:solid #fff;border-width:0 3px 3px 0;-webkit-transform:rotate(45deg);-ms-transform:rotate(45deg);transform:rotate(45deg)}</style><label class=checkbox-container>Fake Mute <input checked id=fakeMute name=fakeMute type=checkbox> <span class=checkmark></span></label><label class=checkbox-container>Fake Deafen <input checked id=fakeDeafen name=fakeDeafen type=checkbox> <span class=checkmark></span></label></div>`
+
+    document.addEventListener('keyup', (e) => {
+      if (this.fakeDeafEnabled)
+        switch (e.key) {
+          case 'F9':
+            this.fakeMute = !this.fakeMute
+            BdApi.alert(
+              'FakeDeaf',
+              `Fake Mute is now ${this.fakeMute ? 'enabled' : 'disabled'}.`
+            )
+            break
+          case 'F10':
+            this.fakeDeafen = !this.fakeDeafen
+            BdApi.alert(
+              'FakeDeaf',
+              `Fake Deaf is now ${this.fakeDeafen ? 'enabled' : 'disabled'}.`
+            )
+            break
+          case 'F11':
+            this.newJoinMute = !this.newJoinMute
+            BdApi.alert(
+              'FakeDeaf',
+              `New Join Mute is now ${
+                this.newJoinMute ? 'enabled' : 'disabled'
+              }.`
+            )
+            this.updateNewJoinMuteMessage()
+            break
+        }
+    })
 
     let apply_handle = {
       apply: (target, thisArg, args) => {
-        if (!window.fakeDeafEnabled) {
+        if (!this.fakeDeafEnabled) {
           return target.apply(thisArg, args)
         }
 
@@ -79,14 +112,14 @@ module.exports = class FakeDeaf {
   }
 
   start() {
-    window.fakeDeafEnabled = true
+    this.fakeDeafEnabled = true
     console.log('-----------------------')
     console.log('FakeDeaf is now enabled')
     console.log('-----------------------')
   }
 
   stop() {
-    window.fakeDeafEnabled = false
+    this.fakeDeafEnabled = false
   }
 
   updateNewJoinMuteMessage() {
@@ -163,8 +196,8 @@ module.exports = class FakeDeaf {
     newJoinMute.checked = this.newJoinMute
     newJoinMute.onchange = () => {
       this.newJoinMute = newJoinMute.checked
-      window.fakeDeafEnabled = false
-      window.fakeDeafEnabled = true
+      this.fakeDeafEnabled = false
+      this.fakeDeafEnabled = true
       this.updateNewJoinMuteMessage()
     }
 
