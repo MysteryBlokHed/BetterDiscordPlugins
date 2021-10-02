@@ -1,22 +1,12 @@
 /**
  * @name MsgHook
  * @author Adam Thompson-Sharpe
- * @description Perform actions when a user sends Discord messages.
+ * @description Add hooks to Discord messages while they're sent.
  * @version 0.1.0
  * @authorId 309628148201553920
  * @source https://github.com/MysteryBlokHed/BetterDiscordPlugins/blob/master/plugins/MsgHook
  * @updateUrl https://raw.githubusercontent.com/MysteryBlokHed/BetterDiscordPlugins/master/plugins/MsgHook/msghook.plugin.js
  */
-
-type MsgHookWindow = Window &
-  typeof globalThis & {
-    MsgHook: {
-      /** Whether the MsgHook plugin is currently enabled */
-      enabled: boolean
-      /** Add a hook to MsgHook */
-      addHook(hook: HookFunction): void
-    }
-  }
 
 /** This doesn't actually work yet. Type will always be Send */
 enum MsgEventType {
@@ -37,6 +27,16 @@ interface MessageJson {
 }
 
 type HookFunction = (e: MsgEvent) => string | undefined
+
+type MsgHookWindow = Window &
+  typeof globalThis & {
+    MsgHook: {
+      /** Whether the MsgHook plugin is currently enabled */
+      enabled: boolean
+      /** Add a hook to MsgHook */
+      addHook(hook: HookFunction): void
+    }
+  }
 
 module.exports = class MsgHook {
   /** List of hooks to run */

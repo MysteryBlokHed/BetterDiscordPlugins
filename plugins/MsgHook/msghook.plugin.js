@@ -1,7 +1,7 @@
 /**
  * @name MsgHook
  * @author Adam Thompson-Sharpe
- * @description Perform actions when a user sends Discord messages.
+ * @description Add hooks to Discord messages while they're sent.
  * @version 0.1.0
  * @authorId 309628148201553920
  * @source https://github.com/MysteryBlokHed/BetterDiscordPlugins/blob/master/plugins/MsgHook
