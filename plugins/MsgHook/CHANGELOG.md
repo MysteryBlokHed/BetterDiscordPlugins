@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Changelogs are different for each plugin.
 
+## 0.3.0
+
+### Added
+
+- Added a way to get the request headers from a hook
+
 ## 0.2.0
 
 ### Added
