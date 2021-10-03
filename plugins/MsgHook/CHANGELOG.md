@@ -12,6 +12,8 @@ Changelogs are different for each plugin.
 ### Added
 
 - Added support for async hooks
+- Added unique ID for hooks
+- Added function to remove hooks
 - Added request URL property (`url`) to MsgHookEvent
 
 ## 0.3.0
