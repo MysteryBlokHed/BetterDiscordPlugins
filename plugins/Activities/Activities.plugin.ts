@@ -29,6 +29,21 @@ module.exports = class Activities {
 
   load() {
     const MsgHook = (window as MsgHookWindow).MsgHook
+
+    if (!MsgHook)
+      return BdApi.alert(
+        'Activities',
+        `Activities requires the MsgHook plugin to work. Download it here:
+        https://github.com/MysteryBlokHed/BetterDiscordPlugins/blob/master/plugins/MsgHook`
+      )
+
+    // Don't return here because we can still add the MsgHook hooks with it disabled
+    if (!MsgHook.enabled)
+      BdApi.alert(
+        'Activities',
+        'MsgHook is not currently enabled. Please enable it to use this plugin'
+      )
+
     MsgHook.addHook((e) => {
       const msg = e.hasCommand('.activity')
       if (msg) {
