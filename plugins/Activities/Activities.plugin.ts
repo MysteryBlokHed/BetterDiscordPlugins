@@ -36,42 +36,17 @@ module.exports = class Activities {
           return BdApi.alert('Activities', `Unknown activity ${msg}`)
 
         // Try to find connected voice channel
-        let channelID
-        const channels = document.querySelector(
-          '#channels > div'
-        ) as HTMLDivElement
+        const connectedEl = document.querySelector(
+          'div[class*=connection] > div > div > a'
+        ) as HTMLAnchorElement | null
 
-        for (let i = 0; i < channels.children.length; i++) {
-          const el = channels.children[i]
-
-          // The VC element is 2 children down, so make sure everything exists
-          if (
-            !el.children ||
-            !el.children[0] ||
-            !el.children[0].children ||
-            !el.children[0].children[0]
-          )
-            continue
-
-          const channel = el.children[0].children[0]
-
-          for (let j = 0; j < channel.classList.length; j++) {
-            // Get list of classes
-            const className = channel.classList[j]
-            // Current VC will have modeConnected class
-            if (className.includes('modeConnected')) {
-              const thingWithId = channel.children[0].children[0]
-              channelID = thingWithId
-                .getAttribute('data-list-item-id')
-                ?.split('___')[1]
-              break
-            }
-          }
-        }
-
+        // Last part of connectedEl's href will be the voice channel ID
+        const split = connectedEl ? connectedEl.href.split('/') : undefined
+        const channelID =
+          connectedEl && split ? split[split.length - 1] : undefined
         // Make sure channel ID was found
         if (!channelID)
-          return BdApi.alert('Activities', 'Please join a Voice Channel')
+          return BdApi.alert('Activities', 'Please join a voice channel')
 
         // Get activity URL
         fetch(`https://discord.com/api/v8/channels/${channelID}/invites`, {
