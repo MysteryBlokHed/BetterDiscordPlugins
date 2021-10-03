@@ -57,7 +57,7 @@ module.exports = class Activities {
         'MsgHook is not currently enabled. Please enable it to use this plugin'
       )
 
-    MsgHook.addHook((e) => {
+    MsgHook.addHook(async (e) => {
       const msg = e.hasCommand('.activity')
       if (msg) {
         if (!this.activities.hasOwnProperty(msg))
@@ -77,41 +77,23 @@ module.exports = class Activities {
           return BdApi.alert('Activities', 'Please join a voice channel')
 
         // Get activity URL
-        fetch(`https://discord.com/api/v9/channels/${channelID}/invites`, {
-          method: 'POST',
-          body: JSON.stringify({
-            max_age: 86400,
-            max_uses: 0,
-            target_application_id: this.activities[msg],
-            target_type: 2,
-            temporary: false,
-            validate: null,
-          }),
-          headers: e.headers,
-        })
-          .then((res) => res.json())
-          // MsgHook doesn't currently support async, so we can't await the fetch
-          // This means that we'll just need to send a second message with the link
-          .then((invite) => {
-            // Delete original message
-            ;(e.id as Promise<string>).then((id) =>
-              fetch(`${e.url}/${id}`, {
-                method: 'DELETE',
-                headers: e.headers,
-              })
-            )
+        const invite = await fetch(
+          `https://discord.com/api/v9/channels/${channelID}/invites`,
+          {
+            method: 'POST',
+            body: JSON.stringify({
+              max_age: 86400,
+              max_uses: 0,
+              target_application_id: this.activities[msg],
+              target_type: 2,
+              temporary: false,
+              validate: null,
+            }),
+            headers: e.headers,
+          }
+        ).then((res) => res.json())
 
-            // Send new message with ID
-            fetch(e.url, {
-              method: 'POST',
-              body: JSON.stringify({
-                content: `https://discord.gg/${invite.code}`,
-                nonce: `${Math.random() * 10 ** 18}`,
-                tts: false,
-              }),
-              headers: e.headers,
-            })
-          })
+        return `https://discord.gg/${invite.code}`
       }
     })
   }
