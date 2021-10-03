@@ -60,6 +60,14 @@ module.exports = class Activities {
           // MsgHook doesn't currently support async, so we can't await the fetch
           // This means that we'll just need to send a second message with the link
           .then((invite) => {
+            // Delete original message
+            e.id.then((id) =>
+              fetch(`${e.url}/${id}`, {
+                method: 'DELETE',
+                headers: e.headers,
+              })
+            )
+            // Send new message with ID
             fetch(e.url, {
               method: 'POST',
               body: JSON.stringify({
