@@ -71,7 +71,7 @@ module.exports = class MsgHook {
     const sendHandler: ProxyHandler<
       (body?: Document | XMLHttpRequestBodyInit | null | undefined) => void
     > = {
-      apply: (
+      apply: async (
         target,
         thisArg,
         args: [body?: Document | XMLHttpRequestBodyInit | null | undefined]
@@ -144,7 +144,12 @@ module.exports = class MsgHook {
                   } else return // This is needed to make TypeScript stop complaining about code paths for some reason
                 },
               })
-              json.content = newMessage ? newMessage : json.content
+              if (typeof newMessage === 'object') {
+                const newRes = await newMessage
+                json.content = newRes ? newRes : json.content
+              } else {
+                json.content = newMessage ? newMessage : json.content
+              }
             }
 
             args[0] = JSON.stringify(json)
@@ -206,7 +211,7 @@ interface MessageJson {
   tts?: boolean
 }
 
-type HookFunction = (e: MsgHookEvent) => string | void
+type HookFunction = (e: MsgHookEvent) => string | void | Promise<string | void>
 
 type MsgHookWindow = Window &
   typeof globalThis & {
