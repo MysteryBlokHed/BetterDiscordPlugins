@@ -28,6 +28,6 @@ jobs:
         uses: actions/setup-node@v2
 
       - name: Run Prettier
-        uses: wearerrequired/lint-action@v1
+        uses: wearerequired/lint-action@v1
         with:
           prettier: true
