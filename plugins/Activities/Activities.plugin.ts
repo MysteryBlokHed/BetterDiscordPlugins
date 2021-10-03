@@ -8,11 +8,8 @@
  * @updateUrl https://raw.githubusercontent.com/MysteryBlokHed/BetterDiscordPlugins/master/plugins/Activities/Activities.plugin.js
  */
 
-/** Small version of BdApi used to stop TypeScript errors */
-declare var BdApi: BdApi
-
-/** Small version of BdApi used to stop TypeScript errors */
-interface BdApi {
+/** Avoids type errors for BdApi.alert method */
+declare var BdApi: {
   alert(title: string, body: string): void
 }
 
