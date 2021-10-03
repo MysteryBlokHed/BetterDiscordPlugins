@@ -26,7 +26,7 @@ interface MessageJson {
   tts: boolean
 }
 
-type HookFunction = (e: MsgEvent) => string | undefined
+type HookFunction = (e: MsgEvent) => string | void
 
 type MsgHookWindow = Window &
   typeof globalThis & {
@@ -35,6 +35,12 @@ type MsgHookWindow = Window &
       enabled: boolean
       /** Add a hook to MsgHook */
       addHook(hook: HookFunction): void
+      /**
+       * Check if a string begins with the given text.
+       * If it does, then return the string without that text.
+       * Otherwise, return nothing.
+       */
+      hasCommand(e: MsgEvent, command: string): string | void
     }
   }
 
@@ -47,6 +53,11 @@ module.exports = class MsgHook {
     ;(window as MsgHookWindow).MsgHook = {
       enabled: true,
       addHook: (hook) => this.hooks.push(hook),
+      hasCommand(e, command) {
+        if (e.msg.startsWith(command + ' ')) {
+          return e.msg.replace(new RegExp(`^${command} `), '')
+        } else return // This is needed to make TypeScript stop complaining about code paths for some reason
+      },
     }
 
     const handler: ProxyHandler<

@@ -24,12 +24,9 @@ when the message starts with `.sayhi`:
 
 ```javascript
 window.MsgHook.addHook((e) => {
-  // Check if message starts with '.sayhi'
-  if (e.msg.startsWith('.sayhi ')) {
-    // Remove '.sayhi ' from beginning of message
-    const msg = e.msg.replace(/^.sayhi /, '')
-    return `Hello, ${msg}!`
-  }
+  // Check if message starts with '.sayhi'. If it does, get the message without it
+  const msg = window.MsgHook.hasCommand(e, '.sayhi')
+  if (msg) return `Hello, ${msg}!`
 })
 ```
 
@@ -42,8 +39,8 @@ and digits to their emoji versions:
 
 ```javascript
 window.MsgHook.addHook((e) => {
-  if (e.msg.startsWith('.block ')) {
-    const msg = e.msg.replace(/^.block /, '')
+  const msg = window.MsgHook.hasCommand(e, '.block')
+  if (msg) {
     let newMsg = ''
 
     for (let char of msg) {
