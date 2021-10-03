@@ -49,7 +49,7 @@ module.exports = class Activities {
           return BdApi.alert('Activities', 'Please join a voice channel')
 
         // Get activity URL
-        fetch(`https://discord.com/api/v8/channels/${channelID}/invites`, {
+        fetch(`https://discord.com/api/v9/channels/${channelID}/invites`, {
           method: 'POST',
           body: JSON.stringify({
             max_age: 86400,
@@ -59,10 +59,7 @@ module.exports = class Activities {
             temporary: false,
             validate: null,
           }),
-          headers: {
-            Authorization: e.headers.Authorization,
-            'Content-Type': 'application/json',
-          },
+          headers: e.headers,
         })
           .then((res) => res.json())
           // MsgHook doesn't currently support async, so we can't await the fetch
