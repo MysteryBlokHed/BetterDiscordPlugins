@@ -13,18 +13,18 @@ Make sure to click the blue part of the link and not the "Play" button.
 
 ## Available Activities
 
-| Activity              | Message                |
-| :-------------------- | :--------------------- |
-| YouTube               | `.activity youtube`    |
-| YouTube (Development) | `.activity youtubedev` |
-| Poker                 | `.activity poker`      |
-| Betrayal.io           | `.activity betrayal`   |
-| Fishing               | `.activity fishing`    |
-| Chess                 | `.activity chess`      |
-| Chess (Development)   | `.activity chessdev`   |
-| Letter Tile           | `.activity lettertile` |
-| Word Snack            | `.activity wordsnack`  |
-| Doodle Crew           | `.activity doodlecrew` |
+| Activity              | ID           |
+| :-------------------- | :----------- |
+| YouTube               | `youtube`    |
+| YouTube (Development) | `youtubedev` |
+| Poker                 | `poker`      |
+| Betrayal.io           | `betrayal`   |
+| Fishing               | `fishing`    |
+| Chess                 | `chess`      |
+| Chess (Development)   | `chessdev`   |
+| Letter Tile           | `lettertile` |
+| Word Snack            | `wordsnack`  |
+| Doodle Crew           | `doodlecrew` |
 
 ## Credits
 
