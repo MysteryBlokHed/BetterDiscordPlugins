@@ -30,17 +30,53 @@ module.exports = class MsgHook {
           try {
             let json = JSON.parse(args[0] as string) as MessageJson
 
-            const method =
+            // This really ugly ternary just means use MessageType.Send on POST,
+            // MessageType.Edit on PATCH, and MessageType.Other for whatever else
+            const method: MessageType =
               thisArg.__sentry_xhr__ &&
-              thisArg.__sentry_xhr__.method === 'PATCH'
+              (thisArg.__sentry_xhr__.method === 'POST'
+                ? MessageType.Send
+                : thisArg.__sentry_xhr__.method === 'PATCH'
                 ? MessageType.Edit
-                : MessageType.Send
+                : MessageType.Other)
+
+            let id: MsgHookEvent['id']
+
+            // Create a promise to get the message id
+            // This is required because the actual message id is unknown for a new message until a response is received
+            if (method === MessageType.Send) {
+              id = new Promise((resolve, reject) => {
+                // Originally defined listener for XMLHttpRequest
+                const originalListener = thisArg.onreadystatechange
+                thisArg.onreadystatechange = () => {
+                  if (thisArg.readyState === XMLHttpRequest.DONE) {
+                    try {
+                      resolve(JSON.parse(thisArg.responseText).id)
+                    } catch {
+                      /*
+                       * Commented out right now since there are more POSTs and PATCHes than just for message-sending,
+                       * meaning that there would be a lot of incorrect rejections due to some responses not having id property
+                       */
+                      // reject('Failed to get message id from response')
+                    }
+                  }
+                  // Call originally defined listener to avoid breaking things
+                  originalListener()
+                }
+              })
+            } else if (method === MessageType.Edit) {
+              const split = thisArg.__sentry_xhr__.url.split('/')
+              id = split[split.length - 1]
+            } else {
+              throw Error // Just used to exit the try/catch, running target.apply
+            }
 
             // Run each hook
             for (const hook of this.hooks) {
               const newMessage = hook({
                 type: method,
                 msg: json.content,
+                id: id,
                 hasCommand(command) {
                   if (this.msg.startsWith(command + ' ')) {
                     return this.msg.replace(new RegExp(`^${command} `), '')
@@ -74,8 +110,15 @@ module.exports = class MsgHook {
 }
 
 interface MsgHookEvent {
+  /** The contents of the message */
   msg: string
+  /** Whether the message was newly sent or edited */
   type: MessageType
+  /**
+   * The id of the message. Can be useful to detect when a message
+   * that already had a hook run was edited.
+   */
+  id: string | Promise<string>
   /**
    * Check if a string begins with the given text.
    * If it does, then return the string without that text.
@@ -87,12 +130,17 @@ interface MsgHookEvent {
 enum MessageType {
   Send,
   Edit,
+  /**
+   * This won't be passed to a HookFunction and generally means
+   * that the HTTP request was not related to a message.
+   */
+  Other,
 }
 
 interface MessageJson {
   content: string
-  nonce: number
-  tts: boolean
+  id?: string
+  tts?: boolean
 }
 
 type HookFunction = (e: MsgHookEvent) => string | void

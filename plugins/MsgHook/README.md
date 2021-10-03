@@ -47,6 +47,56 @@ window.MsgHook.addHook((e) => {
 })
 ```
 
+### Using message ids
+
+To get the ids of a message, the `e.id` property is available.
+It will either be a Promise that resolves to a string, or just a string.
+It will only ever be a Promise for a newly sent message, and a string for an edited message.
+A Promise is used for a new message because the id is only known after a response is received.
+
+Here's an example that just logs the id of every message:
+
+```javascript
+window.MsgHook.addHook((e) => {
+  // If the message is newly sent, ID will be available through a promise
+  if (e.type === 0) e.id.then((id) => console.log('New Message Id:', id))
+  // ID will be immediately available for an edited message since it's already known
+  else console.log('Edited Message Id:', e.id)
+})
+```
+
+### Check for change in already-hooked message
+
+Here's a potential way to monitor when messages that had a hook run were edited:
+
+```javascript
+// Map ids to the hook run
+const hooked = {}
+
+window.MsgHook.addHook((e) => {
+  const msg = e.hasCommand('.hooked')
+  // Run either if the message starts with '.hooked' or the message was edited
+  // and its id is in the hooked object
+  if (msg || (e.type === 1 && hooked[e.id] == '.hooked')) {
+    // Add id to hooked object when it's available
+    if (msg) e.id.then((id) => (hooked[id] = '.hooked'))
+    return `${msg ? msg : e.msg} - this message has been hooked`
+  }
+})
+```
+
+When a message is sent with `.hooked` at the start (eg. `.hooked example`),
+it will have `- this message has been hooked` appended to the end.
+When the message is edited again, even if `.hooked` is not at the beginning,
+the text will still be appended.
+
+#### Why is it `msg ? msg : e.msg` instead of just `msg`?
+
+This is done because the result of `e.hasCommand`
+is either a string without the command, or nothing.
+If the string does not have the command, there's nothing to be removed,
+so `e.msg` can be used directly instead.
+
 ### Block Letters
 
 Here's a hook that converts letters to the `regional_indicator` versions
