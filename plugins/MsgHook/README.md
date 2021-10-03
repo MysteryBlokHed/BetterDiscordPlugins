@@ -90,6 +90,8 @@ it will have `- this message has been hooked` appended to the end.
 When the message is edited again, even if `.hooked` is not at the beginning,
 the text will still be appended.
 
+![Demo](img/message-id-demo.gif)
+
 #### Why is it `msg ? msg : e.msg` instead of just `msg`?
 
 This is done because the result of `e.hasCommand`
