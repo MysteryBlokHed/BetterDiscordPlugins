@@ -31,12 +31,19 @@ module.exports = class MsgHook {
         let id = 0
         // Generate random ID's until we get one that isn't taken
         do {
-          id = Math.random() * 10 ** 6
+          id = Math.floor(Math.random() * 10 ** 6)
         } while (this.hooks.hasOwnProperty(id))
         this.hooks[id] = hook
         return id
       },
-      removeHook: (id) => delete this.hooks[id],
+      removeHook: (id) => {
+        if (id in this.hooks) {
+          delete this.hooks[id]
+          return true
+        } else {
+          return false
+        }
+      },
     }
     /**
      * Handle `XMLHttpRequest.prototype.setRequestHeader`
