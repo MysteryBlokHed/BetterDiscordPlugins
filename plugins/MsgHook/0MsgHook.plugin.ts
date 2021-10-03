@@ -2,7 +2,7 @@
  * @name MsgHook
  * @author Adam Thompson-Sharpe
  * @description Run code when messages are sent or edited.
- * @version 0.3.0
+ * @version 0.4.0
  * @authorId 309628148201553920
  * @source https://github.com/MysteryBlokHed/BetterDiscordPlugins/blob/master/plugins/MsgHook
  * @updateUrl https://raw.githubusercontent.com/MysteryBlokHed/BetterDiscordPlugins/master/plugins/MsgHook/MsgHook.plugin.js
