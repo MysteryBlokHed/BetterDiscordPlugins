@@ -1,0 +1,33 @@
+name: Lint
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - '**/*.json'
+      - '**/*.js'
+      - '**/*.ts'
+  pull_request:
+    branches:
+      - master
+    paths:
+      - '**/*.json'
+      - '**/*.js'
+      - '**/*.ts'
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Node
+        uses: actions/setup-node@v2
+
+      - name: Run Prettier
+        uses: wearerrequired/lint-action@v1
+        with:
+          prettier: true
