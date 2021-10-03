@@ -113,17 +113,21 @@ module.exports = class MsgHook {
             }
             // Run each hook
             for (const hook of this.hooks) {
-              const newMessage = hook({
+              const msgHookEvent = {
                 type: method,
                 msg: json.content,
                 id: id,
+                url: thisArg.__sentry_xhr__.url,
                 headers: thisArg.requestHeaders,
                 hasCommand(command) {
                   if (this.msg.startsWith(command + ' ')) {
                     return this.msg.replace(new RegExp(`^${command} `), '')
                   } else return // This is needed to make TypeScript stop complaining about code paths for some reason
                 },
-              })
+              }
+              const newMessage = hook(msgHookEvent)
+              // If the type of the new message is an object, assuming types are honoured, it must be a Promise
+              // (async function)
               if (typeof newMessage === 'object') {
                 const newRes = await newMessage
                 json.content = newRes ? newRes : json.content
