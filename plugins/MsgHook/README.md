@@ -4,11 +4,11 @@ Run code when messages are sent or edited.
 
 ## Use
 
-The plugin creates a window variable called `msghook`.
-You can add your own hooks with `window.msghook.addHook`:
+The plugin creates a window variable called `MsgHook`.
+You can add your own hooks with `window.MsgHook.addHook`:
 
 ```javascript
-window.msghook.addHook((e) => {
+window.MsgHook.addHook((e) => {
   // your code here
 })
 ```
