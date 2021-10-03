@@ -1,6 +1,6 @@
 # MsgHook
 
-Perform actions when a user sends Discord messages.
+Run code when messages are sent or edited.
 
 ## Use
 
