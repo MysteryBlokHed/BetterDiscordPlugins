@@ -24,6 +24,7 @@ module.exports = class MsgHook {
           try {
             let json = JSON.parse(args[0])
             const method =
+              thisArg.__sentry_xhr__ &&
               thisArg.__sentry_xhr__.method === 'PATCH'
                 ? MessageType.Edit
                 : MessageType.Send
