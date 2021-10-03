@@ -27,6 +27,9 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v2
 
+      - name: Install dependencies
+        run: yarn install
+
       - name: Run Prettier
         uses: wearerequired/lint-action@v1
         with:
