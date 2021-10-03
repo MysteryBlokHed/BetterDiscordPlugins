@@ -9,7 +9,7 @@
  */
 module.exports = class MsgHook {
   /** List of hooks to run */
-  hooks: HookFunction[] = []
+  hooks: { [id: number]: HookFunction } = {}
 
   /** Returns whether or not a request should be noticed by MsgHook */
   isMessageRequest(method: string, url: string): boolean {
@@ -30,7 +30,17 @@ module.exports = class MsgHook {
     ;(window as MsgHookWindow).MsgHook = {
       enabled: false,
       version: '0.4.0',
-      addHook: (hook) => this.hooks.push(hook),
+      addHook: (hook) => {
+        let id = 0
+        // Generate random ID's until we get one that isn't taken
+        do {
+          id = Math.random() * 10 ** 6
+        } while (this.hooks.hasOwnProperty(id))
+
+        this.hooks[id] = hook
+        return id
+      },
+      removeHook: (id) => delete this.hooks[id],
     }
 
     /**
@@ -133,7 +143,7 @@ module.exports = class MsgHook {
             }
 
             // Run each hook
-            for (const hook of this.hooks) {
+            for (const hook of Object.values(this.hooks)) {
               const msgHookEvent: MsgHookEvent = {
                 type: method,
                 msg: json.content,
@@ -228,7 +238,12 @@ type MsgHookWindow = Window &
       enabled: boolean
       /** The version of MsgHook */
       version: string
-      /** Add a hook to MsgHook */
-      addHook(hook: HookFunction): void
+      /**
+       * Add a hook to MsgHook
+       * @returns A unique number to identify the hook
+       */
+      addHook(hook: HookFunction): number
+      /** Remove a hook from MsgHook */
+      removeHook(id: number): void
     }
   }

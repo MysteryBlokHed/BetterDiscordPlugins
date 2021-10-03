@@ -9,7 +9,7 @@
  */
 module.exports = class MsgHook {
   /** List of hooks to run */
-  hooks = []
+  hooks = {}
   /** Returns whether or not a request should be noticed by MsgHook */
   isMessageRequest(method, url) {
     /** Request URL to send a message. Last updated for v9 API */
@@ -27,7 +27,16 @@ module.exports = class MsgHook {
     window.MsgHook = {
       enabled: false,
       version: '0.4.0',
-      addHook: (hook) => this.hooks.push(hook),
+      addHook: (hook) => {
+        let id = 0
+        // Generate random ID's until we get one that isn't taken
+        do {
+          id = Math.random() * 10 ** 6
+        } while (this.hooks.hasOwnProperty(id))
+        this.hooks[id] = hook
+        return id
+      },
+      removeHook: (id) => delete this.hooks[id],
     }
     /**
      * Handle `XMLHttpRequest.prototype.setRequestHeader`
@@ -113,7 +122,7 @@ module.exports = class MsgHook {
               throw Error // Just used to exit the try/catch, running target.apply
             }
             // Run each hook
-            for (const hook of this.hooks) {
+            for (const hook of Object.values(this.hooks)) {
               const msgHookEvent = {
                 type: method,
                 msg: json.content,
