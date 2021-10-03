@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Changelogs are different for each plugin.
 
+## 0.4.0
+
+### Added
+
+- Added support for async hooks
+- Added unique ID for hooks
+- Added function to remove hooks
+- Added request URL property (`url`) to MsgHookEvent
+
 ## 0.3.0
 
 ### Added

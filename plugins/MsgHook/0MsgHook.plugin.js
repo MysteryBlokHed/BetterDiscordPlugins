@@ -2,16 +2,14 @@
  * @name MsgHook
  * @author Adam Thompson-Sharpe
  * @description Run code when messages are sent or edited.
- * @version 0.3.0
+ * @version 0.4.0
  * @authorId 309628148201553920
  * @source https://github.com/MysteryBlokHed/BetterDiscordPlugins/blob/master/plugins/MsgHook
  * @updateUrl https://raw.githubusercontent.com/MysteryBlokHed/BetterDiscordPlugins/master/plugins/MsgHook/MsgHook.plugin.js
  */
 module.exports = class MsgHook {
-  constructor() {
-    /** List of hooks to run */
-    this.hooks = []
-  }
+  /** List of hooks to run */
+  hooks = {}
   /** Returns whether or not a request should be noticed by MsgHook */
   isMessageRequest(method, url) {
     /** Request URL to send a message. Last updated for v9 API */
@@ -28,7 +26,24 @@ module.exports = class MsgHook {
     // Add MsgHook object to window
     window.MsgHook = {
       enabled: false,
-      addHook: (hook) => this.hooks.push(hook),
+      version: '0.4.0',
+      addHook: (hook) => {
+        let id = 0
+        // Generate random ID's until we get one that isn't taken
+        do {
+          id = Math.floor(Math.random() * 10 ** 6)
+        } while (this.hooks.hasOwnProperty(id))
+        this.hooks[id] = hook
+        return id
+      },
+      removeHook: (id) => {
+        if (id in this.hooks) {
+          delete this.hooks[id]
+          return true
+        } else {
+          return false
+        }
+      },
     }
     /**
      * Handle `XMLHttpRequest.prototype.setRequestHeader`
@@ -52,7 +67,7 @@ module.exports = class MsgHook {
             if (!thisArg.requestHeaders) thisArg.requestHeaders = {}
             thisArg.requestHeaders[args[0]] = args[1]
           }
-        } catch (_a) {}
+        } catch {}
         target.apply(thisArg, args)
       },
     }
@@ -62,7 +77,7 @@ module.exports = class MsgHook {
     )
     /** Handle `XMLHttpRequest.prototype.send` */
     const sendHandler = {
-      apply: (target, thisArg, args) => {
+      apply: async (target, thisArg, args) => {
         if (window.MsgHook.enabled) {
           try {
             // Check if the request is message-related and exit if it isn't
@@ -95,7 +110,7 @@ module.exports = class MsgHook {
                   if (thisArg.readyState === XMLHttpRequest.DONE) {
                     try {
                       resolve(JSON.parse(thisArg.responseText).id)
-                    } catch (_a) {
+                    } catch {
                       /*
                        * Commented out right now since there are more POSTs and PATCHes than just for message-sending,
                        * meaning that there would be a lot of incorrect rejections due to some responses not having id property
@@ -114,22 +129,31 @@ module.exports = class MsgHook {
               throw Error // Just used to exit the try/catch, running target.apply
             }
             // Run each hook
-            for (const hook of this.hooks) {
-              const newMessage = hook({
+            for (const hook of Object.values(this.hooks)) {
+              const msgHookEvent = {
                 type: method,
                 msg: json.content,
                 id: id,
+                url: thisArg.__sentry_xhr__.url,
                 headers: thisArg.requestHeaders,
                 hasCommand(command) {
                   if (this.msg.startsWith(command + ' ')) {
                     return this.msg.replace(new RegExp(`^${command} `), '')
                   } else return // This is needed to make TypeScript stop complaining about code paths for some reason
                 },
-              })
-              json.content = newMessage ? newMessage : json.content
+              }
+              const newMessage = hook(msgHookEvent)
+              // If the type of the new message is an object, assuming types are honoured, it must be a Promise
+              // (async function)
+              if (typeof newMessage === 'object') {
+                const newRes = await newMessage
+                json.content = newRes ? newRes : json.content
+              } else {
+                json.content = newMessage ? newMessage : json.content
+              }
             }
             args[0] = JSON.stringify(json)
-          } catch (_a) {}
+          } catch {}
         }
         target.apply(thisArg, args)
       },
