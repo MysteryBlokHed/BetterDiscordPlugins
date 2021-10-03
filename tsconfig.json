@@ -1,4 +1,5 @@
 {
+  // Trigger workflow
   "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
     "module": "commonjs",
