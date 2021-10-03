@@ -1,4 +1,5 @@
 {
+  "$schema": "https://json.schemastore.org/package",
   "scripts": {
     "build": "tsc",
     "watch": "tsc --watch"
