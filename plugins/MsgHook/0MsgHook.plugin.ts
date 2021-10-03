@@ -29,6 +29,7 @@ module.exports = class MsgHook {
     // Add MsgHook object to window
     ;(window as MsgHookWindow).MsgHook = {
       enabled: false,
+      version: '0.4.0',
       addHook: (hook) => this.hooks.push(hook),
     }
 
@@ -225,6 +226,8 @@ type MsgHookWindow = Window &
     MsgHook: {
       /** Whether the MsgHook plugin is currently enabled */
       enabled: boolean
+      /** The version of MsgHook */
+      version: string
       /** Add a hook to MsgHook */
       addHook(hook: HookFunction): void
     }

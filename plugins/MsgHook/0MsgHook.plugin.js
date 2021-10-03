@@ -26,6 +26,7 @@ module.exports = class MsgHook {
     // Add MsgHook object to window
     window.MsgHook = {
       enabled: false,
+      version: '0.4.0',
       addHook: (hook) => this.hooks.push(hook),
     }
     /**
