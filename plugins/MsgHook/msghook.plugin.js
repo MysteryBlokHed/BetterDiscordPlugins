@@ -2,7 +2,7 @@
  * @name MsgHook
  * @author Adam Thompson-Sharpe
  * @description Run code when messages are sent or edited.
- * @version 0.1.1
+ * @version 0.2.0
  * @authorId 309628148201553920
  * @source https://github.com/MysteryBlokHed/BetterDiscordPlugins/blob/master/plugins/MsgHook
  * @updateUrl https://raw.githubusercontent.com/MysteryBlokHed/BetterDiscordPlugins/master/plugins/MsgHook/msghook.plugin.js
@@ -23,9 +23,14 @@ module.exports = class MsgHook {
         if (window.MsgHook.enabled) {
           try {
             let json = JSON.parse(args[0])
+            const method =
+              thisArg.__sentry_xhr__.method === 'PATCH'
+                ? MessageType.Edit
+                : MessageType.Send
             // Run each hook
             for (const hook of this.hooks) {
-              const newMsg = hook({
+              const newMessage = hook({
+                type: method,
                 msg: json.content,
                 hasCommand(command) {
                   if (this.msg.startsWith(command + ' ')) {
@@ -33,7 +38,7 @@ module.exports = class MsgHook {
                   } else return // This is needed to make TypeScript stop complaining about code paths for some reason
                 },
               })
-              json.content = newMsg ? newMsg : json.content
+              json.content = newMessage ? newMessage : json.content
             }
             args[0] = JSON.stringify(json)
           } catch (_a) {}
@@ -53,3 +58,8 @@ module.exports = class MsgHook {
     window.MsgHook.enabled = false
   }
 }
+var MessageType
+;(function (MessageType) {
+  MessageType[(MessageType['Send'] = 0)] = 'Send'
+  MessageType[(MessageType['Edit'] = 1)] = 'Edit'
+})(MessageType || (MessageType = {}))

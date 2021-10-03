@@ -15,6 +15,9 @@ window.msghook.addHook((e) => {
 
 Return a string if the message was modified, and return nothing if it was not.
 
+You can use `e.type` to check whether the message was newly sent or edited.
+It will be `0` for a new message and `1` for an edited one.
+
 ## Examples
 
 ### Say Hi
@@ -31,6 +34,18 @@ window.MsgHook.addHook((e) => {
 ```
 
 Now, sending the message `.sayhi World` would change the message to `Hello, World!`
+
+### Check for edit
+
+Here's how you might run something when a message was edited:
+
+```javascript
+window.MsgHook.addHook((e) => {
+  if (e.type === 1) {
+    // Code for message edit goes here
+  }
+})
+```
 
 ### Block Letters
 
