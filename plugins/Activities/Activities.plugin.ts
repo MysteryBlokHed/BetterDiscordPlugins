@@ -27,13 +27,15 @@ module.exports = class Activities {
     doodlecrew: '878067389634314250',
   }
 
+  hookID = -1
+
   checkVersion(current: string, minimum: string): boolean {
     const currentMinor = parseInt(current.split('.')[1])
     const minimumMinor = parseInt(minimum.split('.')[1])
     return currentMinor >= minimumMinor
   }
 
-  load() {
+  start() {
     const MsgHook = (window as MsgHookWindow).MsgHook
 
     if (!MsgHook)
@@ -57,7 +59,7 @@ module.exports = class Activities {
         'MsgHook is not currently enabled. Please enable it to use this plugin'
       )
 
-    MsgHook.addHook(async (e) => {
+    this.hookID = MsgHook.addHook(async (e) => {
       const msg = e.hasCommand('.activity')
       if (msg) {
         if (!this.activities.hasOwnProperty(msg))
@@ -98,9 +100,10 @@ module.exports = class Activities {
     })
   }
 
-  start() {}
-
-  stop() {}
+  stop() {
+    const MsgHook = (window as MsgHookWindow).MsgHook
+    MsgHook.removeHook(this.hookID)
+  }
 }
 
 /// <reference path="../MsgHook/0MsgHook.plugin.ts" />
