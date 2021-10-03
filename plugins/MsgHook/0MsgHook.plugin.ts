@@ -2,14 +2,14 @@
  * @name MsgHook
  * @author Adam Thompson-Sharpe
  * @description Run code when messages are sent or edited.
- * @version 0.3.0
+ * @version 0.4.0
  * @authorId 309628148201553920
  * @source https://github.com/MysteryBlokHed/BetterDiscordPlugins/blob/master/plugins/MsgHook
  * @updateUrl https://raw.githubusercontent.com/MysteryBlokHed/BetterDiscordPlugins/master/plugins/MsgHook/MsgHook.plugin.js
  */
 module.exports = class MsgHook {
   /** List of hooks to run */
-  hooks: HookFunction[] = []
+  hooks: { [id: number]: HookFunction } = {}
 
   /** Returns whether or not a request should be noticed by MsgHook */
   isMessageRequest(method: string, url: string): boolean {
@@ -29,7 +29,25 @@ module.exports = class MsgHook {
     // Add MsgHook object to window
     ;(window as MsgHookWindow).MsgHook = {
       enabled: false,
-      addHook: (hook) => this.hooks.push(hook),
+      version: '0.4.0',
+      addHook: (hook) => {
+        let id = 0
+        // Generate random ID's until we get one that isn't taken
+        do {
+          id = Math.floor(Math.random() * 10 ** 6)
+        } while (this.hooks.hasOwnProperty(id))
+
+        this.hooks[id] = hook
+        return id
+      },
+      removeHook: (id) => {
+        if (id in this.hooks) {
+          delete this.hooks[id]
+          return true
+        } else {
+          return false
+        }
+      },
     }
 
     /**
@@ -71,7 +89,7 @@ module.exports = class MsgHook {
     const sendHandler: ProxyHandler<
       (body?: Document | XMLHttpRequestBodyInit | null | undefined) => void
     > = {
-      apply: (
+      apply: async (
         target,
         thisArg,
         args: [body?: Document | XMLHttpRequestBodyInit | null | undefined]
@@ -132,19 +150,29 @@ module.exports = class MsgHook {
             }
 
             // Run each hook
-            for (const hook of this.hooks) {
-              const newMessage = hook({
+            for (const hook of Object.values(this.hooks)) {
+              const msgHookEvent: MsgHookEvent = {
                 type: method,
                 msg: json.content,
                 id: id,
+                url: thisArg.__sentry_xhr__.url,
                 headers: thisArg.requestHeaders,
                 hasCommand(command) {
                   if (this.msg.startsWith(command + ' ')) {
                     return this.msg.replace(new RegExp(`^${command} `), '')
                   } else return // This is needed to make TypeScript stop complaining about code paths for some reason
                 },
-              })
-              json.content = newMessage ? newMessage : json.content
+              }
+              const newMessage = hook(msgHookEvent)
+
+              // If the type of the new message is an object, assuming types are honoured, it must be a Promise
+              // (async function)
+              if (typeof newMessage === 'object') {
+                const newRes = await newMessage
+                json.content = newRes ? newRes : json.content
+              } else {
+                json.content = newMessage ? newMessage : json.content
+              }
             }
 
             args[0] = JSON.stringify(json)
@@ -180,6 +208,8 @@ interface MsgHookEvent {
    * that already had a hook run was edited.
    */
   id: string | Promise<string>
+  /** The request URL */
+  url: string
   /** The request headers */
   headers: { [name: string]: string }
   /**
@@ -206,14 +236,24 @@ interface MessageJson {
   tts?: boolean
 }
 
-type HookFunction = (e: MsgHookEvent) => string | void
+type HookFunction = (e: MsgHookEvent) => string | void | Promise<string | void>
 
 type MsgHookWindow = Window &
   typeof globalThis & {
     MsgHook: {
       /** Whether the MsgHook plugin is currently enabled */
       enabled: boolean
-      /** Add a hook to MsgHook */
-      addHook(hook: HookFunction): void
+      /** The version of MsgHook */
+      version: string
+      /**
+       * Add a hook to MsgHook
+       * @returns A unique number to identify the hook
+       */
+      addHook(hook: HookFunction): number
+      /**
+       * Remove a hook from MsgHook
+       * @returns Whether the ID was an existant hook
+       */
+      removeHook(id: number): boolean
     }
   }

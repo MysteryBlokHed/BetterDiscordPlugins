@@ -2,7 +2,7 @@
   "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
     "module": "commonjs",
-    "target": "es6",
+    "target": "esnext",
     "lib": ["dom", "es6"],
     "noImplicitAny": true,
     "strictNullChecks": true,
