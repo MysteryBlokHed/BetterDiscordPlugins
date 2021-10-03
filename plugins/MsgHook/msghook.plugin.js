@@ -23,11 +23,6 @@ module.exports = class MsgHook {
     window.MsgHook = {
       enabled: true,
       addHook: (hook) => this.hooks.push(hook),
-      hasCommand(e, command) {
-        if (e.msg.startsWith(command + ' ')) {
-          return e.msg.replace(new RegExp(`^${command} `), '')
-        } else return // This is needed to make TypeScript stop complaining about code paths for some reason
-      },
     }
     const handler = {
       apply: (target, thisArg, args) => {
@@ -38,6 +33,11 @@ module.exports = class MsgHook {
             const newMsg = hook({
               type: MsgEventType.Send,
               msg: json.content,
+              hasCommand(command) {
+                if (this.msg.startsWith(command + ' ')) {
+                  return this.msg.replace(new RegExp(`^${command} `), '')
+                } else return // This is needed to make TypeScript stop complaining about code paths for some reason
+              },
             })
             json.content = newMsg ? newMsg : json.content
           }
