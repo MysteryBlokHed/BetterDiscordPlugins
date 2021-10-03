@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Changelogs are different for each plugin.
 
-## [Unreleased]
+## 0.2.0
 
 ### Added
 
@@ -17,11 +17,8 @@ Changelogs are different for each plugin.
 
 - Made hooks only run when the plugin is enabled
 
-## [0.1.0]
+## 0.1.0
 
 ### Added
 
 - System to montior for sent and edited messages
-
-[unreleased]: https://github.com/MysteryBlokHed/BetterDiscordPlugins/tree/msghook-v0.2.0/plugins/MsgHook
-[0.1.0]: https://github.com/MysteryBlokHed/BetterDiscordPlugins/tree/d263ac59add67733058cba1c4f267ee485d886ac/plugins/MsgHook
