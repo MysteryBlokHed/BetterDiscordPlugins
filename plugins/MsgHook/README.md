@@ -99,6 +99,17 @@ is either a string without the command, or nothing.
 If the string does not have the command, there's nothing to be removed,
 so `e.msg` can be used directly instead.
 
+### Accessing request headers
+
+The headers of the request are also available as `e.headers`.
+This can be useful if you need to use the user's authorization for another request,
+such as to send an additional message or to edit another one.
+Here's an example to log the Authorization header:
+
+```javascript
+window.MsgHook.addHook((e) => console.log(e.headers.Authorization))
+```
+
 ### Block Letters
 
 Here's a hook that converts letters to the `regional_indicator` versions
