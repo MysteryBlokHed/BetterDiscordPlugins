@@ -2,15 +2,27 @@
  * @name MsgHook
  * @author Adam Thompson-Sharpe
  * @description Run code when messages are sent or edited.
- * @version 0.2.0
+ * @version 0.3.0
  * @authorId 309628148201553920
  * @source https://github.com/MysteryBlokHed/BetterDiscordPlugins/blob/master/plugins/MsgHook
- * @updateUrl https://raw.githubusercontent.com/MysteryBlokHed/BetterDiscordPlugins/master/plugins/MsgHook/msghook.plugin.js
+ * @updateUrl https://raw.githubusercontent.com/MysteryBlokHed/BetterDiscordPlugins/master/plugins/MsgHook/MsgHook.plugin.js
  */
 module.exports = class MsgHook {
   constructor() {
     /** List of hooks to run */
     this.hooks = []
+  }
+  /** Returns whether or not a request should be noticed by MsgHook */
+  isMessageRequest(method, url) {
+    /** Request URL to send a message. Last updated for v9 API */
+    const sendMessage =
+      /^https:\/\/discord.com\/api\/v\d+\/channels\/\d{18}\/messages$/
+    /** Request URL to edit a message. Last update for v9 API */
+    const editMessage =
+      /^https:\/\/discord.com\/api\/v\d+\/channels\/\d{18}\/messages\/\d{18}$/
+    if (!['POST', 'PATCH'].includes(method)) return false
+    if (url.match(sendMessage) || url.match(editMessage)) return true
+    return false
   }
   load() {
     // Add MsgHook object to window
@@ -18,10 +30,50 @@ module.exports = class MsgHook {
       enabled: false,
       addHook: (hook) => this.hooks.push(hook),
     }
-    const handler = {
+    /**
+     * Handle `XMLHttpRequest.prototype.setRequestHeader`
+     * This Proxy's job is just to add the set headers to an object so that they may be accessed later.
+     * This helps if you're trying to do something that needs an authorization token,
+     * which is set in the request headers.
+     */
+    const setHeaderHandler = {
+      apply: (target, thisArg, args) => {
+        try {
+          // Check if request is message-related
+          if (
+            thisArg.__sentry_xhr__ &&
+            this.isMessageRequest(
+              thisArg.__sentry_xhr__.method,
+              thisArg.__sentry_xhr__.url
+            )
+          ) {
+            // Create a new object called requestHeaders and add each header to it
+            // The headers are later added to the MsgHookEvent headers property
+            if (!thisArg.requestHeaders) thisArg.requestHeaders = {}
+            thisArg.requestHeaders[args[0]] = args[1]
+          }
+        } catch (_a) {}
+        target.apply(thisArg, args)
+      },
+    }
+    XMLHttpRequest.prototype.setRequestHeader = new Proxy(
+      XMLHttpRequest.prototype.setRequestHeader,
+      setHeaderHandler
+    )
+    /** Handle `XMLHttpRequest.prototype.send` */
+    const sendHandler = {
       apply: (target, thisArg, args) => {
         if (window.MsgHook.enabled) {
           try {
+            // Check if the request is message-related and exit if it isn't
+            if (
+              !thisArg.__sentry_xhr__ ||
+              !this.isMessageRequest(
+                thisArg.__sentry_xhr__.method,
+                thisArg.__sentry_xhr__.url
+              )
+            )
+              throw Error
             let json = JSON.parse(args[0])
             // This really ugly ternary just means use MessageType.Send on POST,
             // MessageType.Edit on PATCH, and MessageType.Other for whatever else
@@ -67,6 +119,7 @@ module.exports = class MsgHook {
                 type: method,
                 msg: json.content,
                 id: id,
+                headers: thisArg.requestHeaders,
                 hasCommand(command) {
                   if (this.msg.startsWith(command + ' ')) {
                     return this.msg.replace(new RegExp(`^${command} `), '')
@@ -83,7 +136,7 @@ module.exports = class MsgHook {
     }
     XMLHttpRequest.prototype.send = new Proxy(
       XMLHttpRequest.prototype.send,
-      handler
+      sendHandler
     )
   }
   start() {
