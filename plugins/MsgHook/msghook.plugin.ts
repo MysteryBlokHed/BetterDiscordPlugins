@@ -8,15 +8,7 @@
  * @updateUrl https://raw.githubusercontent.com/MysteryBlokHed/BetterDiscordPlugins/master/plugins/MsgHook/msghook.plugin.js
  */
 
-/** This doesn't actually work yet. Type will always be Send */
-enum MsgEventType {
-  Send,
-  Edit,
-}
-
 interface MsgEvent {
-  /** This doesn't actually work yet. Type will always be Send */
-  type: MsgEventType
   msg: string
   /**
    * Check if a string begins with the given text.
@@ -69,7 +61,6 @@ module.exports = class MsgHook {
           // Run each hook
           for (const hook of this.hooks) {
             const newMsg = hook({
-              type: MsgEventType.Send,
               msg: json.content,
               hasCommand(command) {
                 if (this.msg.startsWith(command + ' ')) {

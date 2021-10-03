@@ -7,12 +7,6 @@
  * @source https://github.com/MysteryBlokHed/BetterDiscordPlugins/blob/master/plugins/MsgHook
  * @updateUrl https://raw.githubusercontent.com/MysteryBlokHed/BetterDiscordPlugins/master/plugins/MsgHook/msghook.plugin.js
  */
-/** This doesn't actually work yet. Type will always be Send */
-var MsgEventType
-;(function (MsgEventType) {
-  MsgEventType[(MsgEventType['Send'] = 0)] = 'Send'
-  MsgEventType[(MsgEventType['Edit'] = 1)] = 'Edit'
-})(MsgEventType || (MsgEventType = {}))
 module.exports = class MsgHook {
   constructor() {
     /** List of hooks to run */
@@ -31,7 +25,6 @@ module.exports = class MsgHook {
           // Run each hook
           for (const hook of this.hooks) {
             const newMsg = hook({
-              type: MsgEventType.Send,
               msg: json.content,
               hasCommand(command) {
                 if (this.msg.startsWith(command + ' ')) {
