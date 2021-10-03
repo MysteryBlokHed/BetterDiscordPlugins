@@ -7,7 +7,7 @@
  * @source https://github.com/MysteryBlokHed/BetterDiscordPlugins/blob/master/plugins/MsgHook
  * @updateUrl https://raw.githubusercontent.com/MysteryBlokHed/BetterDiscordPlugins/master/plugins/MsgHook/msghook.plugin.js
  */
-module.exports = class MsgHook {
+  module.exports = class MsgHook {
   /** List of hooks to run */
   hooks: HookFunction[] = []
 
