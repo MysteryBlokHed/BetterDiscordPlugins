@@ -8,7 +8,7 @@
  * @updateUrl https://raw.githubusercontent.com/MysteryBlokHed/BetterDiscordPlugins/master/plugins/Activities/Activities.plugin.js
  */
 
-/** Avoids type errors for BdApi.alert method */
+/** Prevents type errors for BdApi.alert method */
 declare var BdApi: {
   alert(title: string, body: string): void
 }
@@ -27,6 +27,12 @@ module.exports = class Activities {
     doodlecrew: '878067389634314250',
   }
 
+  checkVersion(current: string, minimum: string): boolean {
+    const currentMinor = parseInt(current.split('.')[1])
+    const minimumMinor = parseInt(minimum.split('.')[1])
+    return currentMinor >= minimumMinor
+  }
+
   load() {
     const MsgHook = (window as MsgHookWindow).MsgHook
 
@@ -37,8 +43,15 @@ module.exports = class Activities {
         https://github.com/MysteryBlokHed/BetterDiscordPlugins/blob/master/plugins/MsgHook`
       )
 
-    // Don't return here because we can still add the MsgHook hooks with it disabled
+    // Check MsgHook version
+    if (!MsgHook.version || !this.checkVersion(MsgHook.version, '0.4.0'))
+      return BdApi.alert(
+        'Activities',
+        'Incompatible MsgHook version found! Minimum is v0.4.0'
+      )
+
     if (!MsgHook.enabled)
+      // Don't return here because we can still add the MsgHook hooks with it disabled
       BdApi.alert(
         'Activities',
         'MsgHook is not currently enabled. Please enable it to use this plugin'
