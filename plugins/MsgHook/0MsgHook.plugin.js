@@ -30,9 +30,8 @@ module.exports = class MsgHook {
       addHook: (hook) => {
         let id = 0
         // Generate random ID's until we get one that isn't taken
-        do {
-          id = Math.floor(Math.random() * 10 ** 6)
-        } while (this.hooks.hasOwnProperty(id))
+        do id = Math.floor(Math.random() * 10 ** 6)
+        while (this.hooks.hasOwnProperty(id))
         this.hooks[id] = hook
         return id
       },
