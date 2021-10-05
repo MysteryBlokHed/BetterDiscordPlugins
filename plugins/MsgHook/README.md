@@ -2,6 +2,8 @@
 
 Run code when messages are sent or edited.
 
+Note that this plugin does not currently support hooks for messages sent, edited, or deleted by other users.
+
 ## Use
 
 The plugin creates a window variable called `MsgHook`.
