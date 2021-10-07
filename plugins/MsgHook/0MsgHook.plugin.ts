@@ -2,7 +2,7 @@
  * @name MsgHook
  * @author Adam Thompson-Sharpe
  * @description Run code when messages are sent or edited.
- * @version 0.4.0
+ * @version 0.4.1
  * @authorId 309628148201553920
  * @source https://github.com/MysteryBlokHed/BetterDiscordPlugins/blob/master/plugins/MsgHook
  * @updateUrl https://raw.githubusercontent.com/MysteryBlokHed/BetterDiscordPlugins/master/plugins/MsgHook/MsgHook.plugin.js
@@ -29,13 +29,12 @@ module.exports = class MsgHook {
     // Add MsgHook object to window
     ;(window as MsgHookWindow).MsgHook = {
       enabled: false,
-      version: '0.4.0',
+      version: '0.4.1',
       addHook: (hook) => {
         let id = 0
         // Generate random ID's until we get one that isn't taken
-        do {
-          id = Math.floor(Math.random() * 10 ** 6)
-        } while (this.hooks.hasOwnProperty(id))
+        do id = Math.floor(Math.random() * 10 ** 6)
+        while (this.hooks.hasOwnProperty(id))
 
         this.hooks[id] = hook
         return id
@@ -206,6 +205,9 @@ interface MsgHookEvent {
   /**
    * The id of the message. Can be useful to detect when a message
    * that already had a hook run was edited.
+   * The id will always be a string when a message is edited
+   * (`type === MessageType.Edit`), and will always be a Promise when
+   * a message is newly sent (`type === Message.Send`)
    */
   id: string | Promise<string>
   /** The request URL */

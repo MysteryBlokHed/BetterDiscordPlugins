@@ -2,6 +2,8 @@
 
 Run code when messages are sent or edited.
 
+Note that this plugin does not currently support hooks for messages sent, edited, or deleted by other users.
+
 ## Use
 
 The plugin creates a window variable called `MsgHook`.
@@ -13,10 +15,32 @@ window.MsgHook.addHook((e) => {
 })
 ```
 
-Return a string if the message was modified, and return nothing if it was not.
+The hook should return a string if the message was modified, and return nothing if it was not.
 
 You can use `e.type` to check whether the message was newly sent or edited.
 It will be `0` for a new message and `1` for an edited one.
+
+### Types
+
+Since this plugin is written in TypeScript, you can use the types with a triple-slash directive
+in your own TypeScript plugin:
+
+```typescript
+/// <reference path="path/to/0MsgHook.plugin.ts" />
+```
+
+It's best to put this at the bottom so it doesn't interfere with the plugin metadata
+expected at the top of the file.
+
+This gives you better typing and in-editor documentation.
+
+```typescript
+/// <reference path="path/to/0MsgHook.plugin.ts" />
+const MsgHook = (window as MsgHookWindow).MsgHook
+MsgHook.addHook((e) => {
+  return `${e.msg} - TypeScript hook!`
+})
+```
 
 ## Examples
 
