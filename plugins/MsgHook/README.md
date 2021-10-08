@@ -104,7 +104,7 @@ window.MsgHook.addHook((e) => {
   if (msg || (e.type === 1 && hooked[e.id] == '.hooked')) {
     // Add id to hooked object when it's available
     if (msg) e.id.then((id) => (hooked[id] = '.hooked'))
-    return `${msg ? msg : e.msg} - this message has been hooked`
+    return `${msg ?? e.msg} - this message has been hooked`
   }
 })
 ```
@@ -116,7 +116,7 @@ the text will still be appended.
 
 ![Demo](img/message-id-demo.gif)
 
-#### Why is it `msg ? msg : e.msg` instead of just `msg`?
+#### Why is it `msg ?? e.msg` instead of just `msg`?
 
 This is done because the result of `e.hasCommand`
 is either a string without the command, or nothing.

@@ -146,9 +146,9 @@ module.exports = class MsgHook {
               // (async function)
               if (typeof newMessage === 'object') {
                 const newRes = await newMessage
-                json.content = newRes ? newRes : json.content
+                json.content = newRes ?? json.content
               } else {
-                json.content = newMessage ? newMessage : json.content
+                json.content = newMessage ?? json.content
               }
             }
             args[0] = JSON.stringify(json)
