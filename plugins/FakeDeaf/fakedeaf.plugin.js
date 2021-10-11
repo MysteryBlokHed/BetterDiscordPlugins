@@ -32,7 +32,7 @@ module.exports = class FakeDeaf {
     if (!this.fakeDeafEnabled) this.fakeDeafEnabled = false
     this.settings.innerHTML = `<div><style>.checkbox-container{display:block;position:relative;padding-left:35px;margin-bottom:12px;cursor:pointer;font-size:22px;font-family:Arial,Helvetica,sans-serif;color:#fff;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.checkbox-container input{position:absolute;opacity:0;cursor:pointer;height:0;width:0}.checkmark{position:absolute;top:0;left:0;height:25px;width:25px;background-color:#eee}.checkbox-container:hover input~.checkmark{background-color:#ccc}.checkbox-container input:checked~.checkmark{background-color:#2196f3}.checkmark:after{content:'';position:absolute;display:none}.checkbox-container input:checked~.checkmark:after{display:block}.checkbox-container .checkmark:after{left:9px;top:5px;width:5px;height:10px;border:solid #fff;border-width:0 3px 3px 0;-webkit-transform:rotate(45deg);-ms-transform:rotate(45deg);transform:rotate(45deg)}</style><label class=checkbox-container>Fake Mute <input checked id=fakeMute name=fakeMute type=checkbox> <span class=checkmark></span></label><label class=checkbox-container>Fake Deafen <input checked id=fakeDeafen name=fakeDeafen type=checkbox> <span class=checkmark></span></label></div>`
 
-    document.addEventListener('keyup', (e) => {
+    document.addEventListener('keyup', e => {
       if (this.fakeDeafEnabled)
         switch (e.key) {
           case 'F9':

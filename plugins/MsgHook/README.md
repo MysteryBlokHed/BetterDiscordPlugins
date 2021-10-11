@@ -10,7 +10,7 @@ The plugin creates a window variable called `MsgHook`.
 You can add your own hooks with `window.MsgHook.addHook`:
 
 ```javascript
-window.MsgHook.addHook((e) => {
+window.MsgHook.addHook(e => {
   // your code here
 })
 ```
@@ -37,7 +37,7 @@ This gives you better typing and in-editor documentation.
 ```typescript
 /// <reference path="path/to/0MsgHook.plugin.ts" />
 const MsgHook = (window as MsgHookWindow).MsgHook
-MsgHook.addHook((e) => {
+MsgHook.addHook(e => {
   return `${e.msg} - TypeScript hook!`
 })
 ```
@@ -50,7 +50,7 @@ Here's an example hook that replaces the message content
 when the message starts with `.sayhi`:
 
 ```javascript
-window.MsgHook.addHook((e) => {
+window.MsgHook.addHook(e => {
   // Check if message starts with '.sayhi'. If it does, get the message without it
   const msg = e.hasCommand('.sayhi')
   if (msg) return `Hello, ${msg}!`
@@ -64,7 +64,7 @@ Now, sending the message `.sayhi World` would change the message to `Hello, Worl
 Here's how you might run something when a message was edited:
 
 ```javascript
-window.MsgHook.addHook((e) => {
+window.MsgHook.addHook(e => {
   if (e.type === 1) {
     // Code for message edit goes here
   }
@@ -81,9 +81,9 @@ A Promise is used for a new message because the id is only known after a respons
 Here's an example that just logs the id of every message:
 
 ```javascript
-window.MsgHook.addHook((e) => {
+window.MsgHook.addHook(e => {
   // If the message is newly sent, ID will be available through a promise
-  if (e.type === 0) e.id.then((id) => console.log('New Message Id:', id))
+  if (e.type === 0) e.id.then(id => console.log('New Message Id:', id))
   // ID will be immediately available for an edited message since it's already known
   else console.log('Edited Message Id:', e.id)
 })
@@ -97,13 +97,13 @@ Here's a potential way to monitor when messages that had a hook run were edited:
 // Map ids to the hook run
 const hooked = {}
 
-window.MsgHook.addHook((e) => {
+window.MsgHook.addHook(e => {
   const msg = e.hasCommand('.hooked')
   // Run either if the message starts with '.hooked' or the message was edited
   // and its id is in the hooked object
   if (msg || (e.type === 1 && hooked[e.id] == '.hooked')) {
     // Add id to hooked object when it's available
-    if (msg) e.id.then((id) => (hooked[id] = '.hooked'))
+    if (msg) e.id.then(id => (hooked[id] = '.hooked'))
     return `${msg ?? e.msg} - this message has been hooked`
   }
 })
@@ -131,7 +131,7 @@ such as to send an additional message or to edit another one.
 Here's an example to log the Authorization header:
 
 ```javascript
-window.MsgHook.addHook((e) => console.log(e.headers.Authorization))
+window.MsgHook.addHook(e => console.log(e.headers.Authorization))
 ```
 
 ### Block Letters
@@ -140,7 +140,7 @@ Here's a hook that converts letters to the `regional_indicator` versions
 and digits to their emoji versions:
 
 ```javascript
-window.MsgHook.addHook((e) => {
+window.MsgHook.addHook(e => {
   const msg = e.hasCommand('.block')
   if (msg) {
     let newMsg = ''

@@ -46,7 +46,7 @@ module.exports = class Activities {
         'Activities',
         'MsgHook is not currently enabled. Please enable it to use this plugin'
       )
-    this.hookID = MsgHook.addHook(async (e) => {
+    this.hookID = MsgHook.addHook(async e => {
       const msg = e.hasCommand('.activity')
       if (msg) {
         if (!this.activities.hasOwnProperty(msg))
@@ -77,7 +77,7 @@ module.exports = class Activities {
             }),
             headers: e.headers,
           }
-        ).then((res) => res.json())
+        ).then(res => res.json())
         return `https://discord.gg/${invite.code}`
       }
     })

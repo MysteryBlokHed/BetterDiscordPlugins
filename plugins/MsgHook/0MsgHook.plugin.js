@@ -27,7 +27,7 @@ module.exports = class MsgHook {
     window.MsgHook = {
       enabled: false,
       version: '0.4.1',
-      addHook: (hook) => {
+      addHook: hook => {
         let id = 0
         // Generate random ID's until we get one that isn't taken
         do id = Math.floor(Math.random() * 10 ** 6)
@@ -35,7 +35,7 @@ module.exports = class MsgHook {
         this.hooks[id] = hook
         return id
       },
-      removeHook: (id) => {
+      removeHook: id => {
         if (id in this.hooks) {
           delete this.hooks[id]
           return true
