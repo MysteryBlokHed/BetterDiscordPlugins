@@ -8,11 +8,6 @@
  * @updateUrl https://raw.githubusercontent.com/MysteryBlokHed/BetterDiscordPlugins/master/plugins/Activities/Activities.plugin.js
  */
 
-/** Prevents type errors for BdApi.alert method */
-declare var BdApi: {
-  alert(title: string, body: string): void
-}
-
 module.exports = class Activities {
   activities: { [activity: string]: string } = {
     youtube: '880218394199220334',
