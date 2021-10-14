@@ -9,7 +9,7 @@
  */
 module.exports = class MsgHook {
   /** List of hooks to run */
-  hooks: { [id: number]: HookFunction } = {}
+  hooks: Record<number, HookFunction> = {}
 
   /** Returns whether or not a request should be noticed by MsgHook */
   isMessageRequest(method: string, url: string): boolean {
@@ -213,7 +213,7 @@ interface MsgHookEvent {
   /** The request URL */
   url: string
   /** The request headers */
-  headers: { [name: string]: string }
+  headers: Record<string, string>
   /**
    * Check if a string begins with the given text.
    * If it does, then return the string without that text.

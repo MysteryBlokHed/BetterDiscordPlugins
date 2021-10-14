@@ -9,7 +9,7 @@
  */
 
 module.exports = class Activities {
-  activities: { [activity: string]: string } = {
+  activities: Record<string, string> = {
     youtube: '880218394199220334',
     youtubedev: '880218832743055411',
     poker: '755827207812677713',
