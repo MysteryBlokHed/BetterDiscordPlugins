@@ -2,7 +2,7 @@
  * @name Activities
  * @author Adam Thompson-Sharpe
  * @description Start Discord Activities with friends.
- * @version 0.1.0
+ * @version 0.1.1
  * @authorId 309628148201553920
  * @source https://github.com/MysteryBlokHed/BetterDiscordPlugins/blob/master/plugins/Activities
  * @updateUrl https://raw.githubusercontent.com/MysteryBlokHed/BetterDiscordPlugins/master/plugins/Activities/Activities.plugin.js
@@ -31,7 +31,7 @@ module.exports = class Activities {
   }
 
   start() {
-    const MsgHook = (window as MsgHookWindow).MsgHook
+    const MsgHook = window.MsgHook
 
     if (!MsgHook)
       return BdApi.alert(
@@ -96,8 +96,7 @@ module.exports = class Activities {
   }
 
   stop() {
-    const MsgHook = (window as MsgHookWindow).MsgHook
-    MsgHook.removeHook(this.hookID)
+    window.MsgHook.removeHook(this.hookID)
   }
 }
 

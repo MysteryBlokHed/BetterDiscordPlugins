@@ -2,7 +2,7 @@
  * @name MsgHook
  * @author Adam Thompson-Sharpe
  * @description Run code when messages are sent or edited.
- * @version 0.4.1
+ * @version 0.4.2
  * @authorId 309628148201553920
  * @source https://github.com/MysteryBlokHed/BetterDiscordPlugins/blob/master/plugins/MsgHook
  * @updateUrl https://raw.githubusercontent.com/MysteryBlokHed/BetterDiscordPlugins/master/plugins/MsgHook/MsgHook.plugin.js
@@ -27,7 +27,7 @@ module.exports = class MsgHook {
 
   load() {
     // Add MsgHook object to window
-    ;(window as MsgHookWindow).MsgHook = {
+    window.MsgHook = {
       enabled: false,
       version: '0.4.1',
       addHook: hook => {
@@ -93,7 +93,7 @@ module.exports = class MsgHook {
         thisArg,
         args: [body?: Document | XMLHttpRequestBodyInit | null | undefined]
       ) => {
-        if ((window as MsgHookWindow).MsgHook.enabled) {
+        if (window.MsgHook.enabled) {
           try {
             // Check if the request is message-related and exit if it isn't
             if (
@@ -189,11 +189,11 @@ module.exports = class MsgHook {
   }
 
   start() {
-    ;(window as MsgHookWindow).MsgHook.enabled = true
+    window.MsgHook.enabled = true
   }
 
   stop() {
-    ;(window as MsgHookWindow).MsgHook.enabled = false
+    window.MsgHook.enabled = false
   }
 }
 
@@ -222,6 +222,25 @@ interface MsgHookEvent {
   hasCommand(command: string): string | void
 }
 
+interface Window {
+  MsgHook: {
+    /** Whether the MsgHook plugin is currently enabled */
+    enabled: boolean
+    /** The version of MsgHook */
+    version: string
+    /**
+     * Add a hook to MsgHook
+     * @returns A unique number to identify the hook
+     */
+    addHook(hook: HookFunction): number
+    /**
+     * Remove a hook from MsgHook
+     * @returns Whether the ID was an existant hook
+     */
+    removeHook(id: number): boolean
+  }
+}
+
 enum MessageType {
   Send,
   Edit,
@@ -239,23 +258,3 @@ interface MessageJson {
 }
 
 type HookFunction = (e: MsgHookEvent) => string | void | Promise<string | void>
-
-type MsgHookWindow = Window &
-  typeof globalThis & {
-    MsgHook: {
-      /** Whether the MsgHook plugin is currently enabled */
-      enabled: boolean
-      /** The version of MsgHook */
-      version: string
-      /**
-       * Add a hook to MsgHook
-       * @returns A unique number to identify the hook
-       */
-      addHook(hook: HookFunction): number
-      /**
-       * Remove a hook from MsgHook
-       * @returns Whether the ID was an existant hook
-       */
-      removeHook(id: number): boolean
-    }
-  }

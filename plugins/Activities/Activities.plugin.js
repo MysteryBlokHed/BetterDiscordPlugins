@@ -83,8 +83,7 @@ module.exports = class Activities {
     })
   }
   stop() {
-    const MsgHook = window.MsgHook
-    MsgHook.removeHook(this.hookID)
+    window.MsgHook.removeHook(this.hookID)
   }
 }
 /// <reference path="../MsgHook/0MsgHook.plugin.ts" />
