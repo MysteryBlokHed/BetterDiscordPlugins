@@ -6,6 +6,28 @@ Note that this plugin does not currently support hooks for messages sent, edited
 
 ## Use
 
+### Making a plugin that uses MsgHook
+
+To make your plugin use MsgHook, you can check if the `window.MsgHook` object exists.
+To check if MsgHook is enabled, you can see if `window.MsgHook.enabled` is true.
+
+```javascript
+if (window.MsgHook && window.MsgHook.enabled) // True if MsgHook is installed and enabled
+```
+
+If MsgHook is not installed, you could prompt the user with an install link:
+
+```javascript
+if (!MsgHook)
+  BdApi.alert(
+    'Plugin',
+    `This plugin requires the MsgHook plugin to work. Download it here:
+    https://github.com/MysteryBlokHed/BetterDiscordPlugins/blob/master/plugins/MsgHook`
+  )
+```
+
+### Adding hooks
+
 The plugin creates a window variable called `MsgHook`.
 You can add your own hooks with `window.MsgHook.addHook`:
 
