@@ -2,25 +2,27 @@
  * @name Activities
  * @author Adam Thompson-Sharpe
  * @description Start Discord Activities with friends.
- * @version 0.1.0
+ * @version 0.1.1
  * @authorId 309628148201553920
  * @source https://github.com/MysteryBlokHed/BetterDiscordPlugins/blob/master/plugins/Activities
  * @updateUrl https://raw.githubusercontent.com/MysteryBlokHed/BetterDiscordPlugins/master/plugins/Activities/Activities.plugin.js
  */
 module.exports = class Activities {
-  activities = {
-    youtube: '880218394199220334',
-    youtubedev: '880218832743055411',
-    poker: '755827207812677713',
-    betrayal: '773336526917861400',
-    fishing: '814288819477020702',
-    chess: '832012774040141894',
-    chessdev: '832012586023256104',
-    lettertile: '879863686565621790',
-    wordsnack: '879863976006127627',
-    doodlecrew: '878067389634314250',
+  constructor() {
+    this.activities = {
+      youtube: '880218394199220334',
+      youtubedev: '880218832743055411',
+      poker: '755827207812677713',
+      betrayal: '773336526917861400',
+      fishing: '814288819477020702',
+      chess: '832012774040141894',
+      chessdev: '832012586023256104',
+      lettertile: '879863686565621790',
+      wordsnack: '879863976006127627',
+      doodlecrew: '878067389634314250',
+    }
+    this.hookID = -1
   }
-  hookID = -1
   checkVersion(current, minimum) {
     const currentMinor = parseInt(current.split('.')[1])
     const minimumMinor = parseInt(minimum.split('.')[1])

@@ -2,14 +2,16 @@
  * @name MsgHook
  * @author Adam Thompson-Sharpe
  * @description Run code when messages are sent or edited.
- * @version 0.4.1
+ * @version 0.4.2
  * @authorId 309628148201553920
  * @source https://github.com/MysteryBlokHed/BetterDiscordPlugins/blob/master/plugins/MsgHook
  * @updateUrl https://raw.githubusercontent.com/MysteryBlokHed/BetterDiscordPlugins/master/plugins/MsgHook/MsgHook.plugin.js
  */
 module.exports = class MsgHook {
-  /** List of hooks to run */
-  hooks = {}
+  constructor() {
+    /** List of hooks to run */
+    this.hooks = {}
+  }
   /** Returns whether or not a request should be noticed by MsgHook */
   isMessageRequest(method, url) {
     /** Request URL to send a message. Last updated for v9 API */
