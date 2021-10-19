@@ -144,15 +144,18 @@ module.exports = class MsgHook {
             }
             // Run each hook
             for (const hook of Object.values(this.hooks)) {
-              // Do not run hook if validation failed
-              if (typeof hook === 'object' && !hook[1].exec(msgHookEvent.msg))
-                continue
+              // Validate hook if validation expression was passed
+              const result =
+                typeof hook === 'object'
+                  ? hook[1].exec(msgHookEvent.msg)
+                  : undefined
+              // Do not continue if validation failed
+              if (!result) continue
               const newMessage =
                 typeof hook === 'function'
                   ? hook(msgHookEvent)
-                  : hook[0](msgHookEvent)
+                  : hook[0](msgHookEvent, result)
               // If the type of the new message is an object, assuming types are honoured, it must be a Promise
-              // (async function)
               if (typeof newMessage === 'object') {
                 const newRes = await newMessage
                 json.content = newRes ?? json.content
