@@ -29,7 +29,7 @@ Make sure to click the blue part of the link and not the "Play" button.
 ## Credits
 
 The table of application ID's was taken from [discord-together] by RemyK888.
-You can view its license [here](https://github.com/RemyK888/discord-together/blob/main/LICENSE).
+You can view its license [here](https://github.com/RemyK888/discord-together/blob/d0108682ea526c0aaa9fc25ad94d87be9b824522/LICENSE).
 
 [msghook plugin]: https://github.com/MysteryBlokHed/BetterDiscordPlugins/blob/master/plugins/MsgHook
-[discord-together]: https://github.com/RemyK888/discord-together/blob/main/src/DiscordTogether.js
+[discord-together]: https://github.com/RemyK888/discord-together/blob/d0108682ea526c0aaa9fc25ad94d87be9b824522/src/DiscordTogether.js#L4-L15
