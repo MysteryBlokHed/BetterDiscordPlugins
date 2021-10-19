@@ -9,7 +9,7 @@
  */
 module.exports = class MsgHook {
   /** List of hooks to run */
-  hooks: Record<number, HookFunction> = {}
+  hooks: Record<number, HookFunction | [HookFunction, RegExp]> = {}
 
   /** Returns whether or not a request should be noticed by MsgHook */
   isMessageRequest(method: string, url: string): boolean {
@@ -30,13 +30,15 @@ module.exports = class MsgHook {
     window.MsgHook = {
       enabled: false,
       version: '0.5.0',
-      addHook: hook => {
+      addHook: (hook, validation) => {
         let id = 0
         // Generate random ID's until we get one that isn't taken
         do id = Math.floor(Math.random() * 10 ** 6)
         while (this.hooks.hasOwnProperty(id))
 
-        this.hooks[id] = hook
+        if (validation) this.hooks[id] = [hook, validation]
+        else this.hooks[id] = hook
+
         return id
       },
       removeHook: id => {
@@ -148,21 +150,29 @@ module.exports = class MsgHook {
               throw Error // Just used to exit the try/catch, running target.apply
             }
 
+            const msgHookEvent: MsgHookEvent = {
+              type: method,
+              msg: json.content,
+              id: id,
+              url: thisArg.__sentry_xhr__.url,
+              headers: thisArg.requestHeaders,
+              hasCommand(command) {
+                if (this.msg.startsWith(command + ' ')) {
+                  return this.msg.replace(new RegExp(`^${command} `), '')
+                } else return // This is needed to make TypeScript stop complaining about code paths for some reason
+              },
+            }
+
             // Run each hook
             for (const hook of Object.values(this.hooks)) {
-              const msgHookEvent: MsgHookEvent = {
-                type: method,
-                msg: json.content,
-                id: id,
-                url: thisArg.__sentry_xhr__.url,
-                headers: thisArg.requestHeaders,
-                hasCommand(command) {
-                  if (this.msg.startsWith(command + ' ')) {
-                    return this.msg.replace(new RegExp(`^${command} `), '')
-                  } else return // This is needed to make TypeScript stop complaining about code paths for some reason
-                },
-              }
-              const newMessage = hook(msgHookEvent)
+              // Do not run hook if validation failed
+              if (typeof hook === 'object' && !hook[1].exec(msgHookEvent.msg))
+                continue
+
+              const newMessage =
+                typeof hook === 'function'
+                  ? hook(msgHookEvent)
+                  : hook[0](msgHookEvent)
 
               // If the type of the new message is an object, assuming types are honoured, it must be a Promise
               // (async function)
@@ -231,9 +241,12 @@ interface Window {
     version: string
     /**
      * Add a hook to MsgHook
+     * @param hook The hook to run
+     * @param validation A regular expression to validate the message.
+     * The hook won't be run if validation fails.
      * @returns A unique number to identify the hook
      */
-    addHook(hook: HookFunction): number
+    addHook(hook: HookFunction, validation?: RegExp): number
     /**
      * Remove a hook from MsgHook
      * @returns Whether the ID was an existant hook
