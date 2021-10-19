@@ -8,8 +8,10 @@
  * @updateUrl https://raw.githubusercontent.com/MysteryBlokHed/BetterDiscordPlugins/master/plugins/Spammer/Spammer.plugin.js
  */
 module.exports = class Spammer {
-  spamIntervals = []
-  hookID = 0
+  constructor() {
+    this.spamIntervals = []
+    this.hookID = 0
+  }
   checkVersion(current, minimum) {
     const currentMinor = parseInt(current.split('.')[1])
     const minimumMinor = parseInt(minimum.split('.')[1])
@@ -25,7 +27,7 @@ module.exports = class Spammer {
         const message = match[1]
         const interval = parseInt(match[2] ?? 1500)
         this.spamIntervals.push(
-          setInterval(() => {
+          window.setInterval(() => {
             fetch(e.url, {
               method: 'POST',
               headers: e.headers,

@@ -32,7 +32,7 @@ module.exports = class Spammer {
         const interval = parseInt(match[2] ?? 1500)
 
         this.spamIntervals.push(
-          setInterval(() => {
+          window.setInterval(() => {
             fetch(e.url, {
               method: 'POST',
               headers: e.headers,
@@ -42,7 +42,7 @@ module.exports = class Spammer {
                 tts: false,
               }),
             })
-          }, interval) as unknown as number
+          }, interval)
         )
 
         return message
