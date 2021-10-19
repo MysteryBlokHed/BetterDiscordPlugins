@@ -20,7 +20,7 @@ module.exports = class Spammer {
   start() {
     if (!window.MsgHook || !this.checkVersion(window.MsgHook.version, '0.4.0'))
       return
-    const command = /\.spam\s*\(\s*(?:"(.*)")\s*(?:,\s*(\d+)\s*)?,?\s*\)/i
+    const command = /^\.spam\s*\(\s*(?:"(.*)")\s*(?:,\s*(\d+)\s*)?,?\s*\)$/i
     this.hookID = window.MsgHook.addHook(e => {
       const match = command.exec(e.msg)
       if (match) {
