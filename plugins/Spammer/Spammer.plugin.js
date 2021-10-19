@@ -33,7 +33,7 @@ module.exports = class Spammer {
               headers: e.headers,
               body: JSON.stringify({
                 content: message,
-                nonce: (Math.random() * 10 ** 18).toString(),
+                nonce: Date.now() * 4194304,
                 tts: false,
               }),
             })
