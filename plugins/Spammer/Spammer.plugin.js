@@ -20,14 +20,15 @@ module.exports = class Spammer {
   start() {
     if (!window.MsgHook || !this.checkVersion(window.MsgHook.version, '0.4.0'))
       return
-    const spamCommand = /^\.spam\s*\(\s*(?:"(.*)")\s*(?:,\s*(\d+)\s*)?,?\s*\)$/i
+    const spamCommand =
+      /^\.spam(?:\s*\(\s*(?:"(.*)")\s*(?:,\s*(\d+)\s*)?,?\s*\))|(\s+.*)$/i
     const stopCommand = /^\.spam[-_]?stop(?:\(\s*\))?$/i
     // Hook to add spammer
     this.hooks.push(
       window.MsgHook.addHook(e => {
         const match = spamCommand.exec(e.msg)
         if (match) {
-          const message = match[1]
+          const message = match[1] ?? match[3]
           const interval = parseInt(match[2] ?? 1500)
           this.spamIntervals.push(
             window.setInterval(() => {
