@@ -2,7 +2,7 @@
  * @name MsgHook
  * @author Adam Thompson-Sharpe
  * @description Run code when messages are sent or edited.
- * @version 0.5.0
+ * @version 0.5.1
  * @authorId 309628148201553920
  * @source https://github.com/MysteryBlokHed/BetterDiscordPlugins/blob/master/plugins/MsgHook
  * @updateUrl https://raw.githubusercontent.com/MysteryBlokHed/BetterDiscordPlugins/master/plugins/MsgHook/MsgHook.plugin.js
@@ -28,7 +28,7 @@ module.exports = class MsgHook {
     // Add MsgHook object to window
     window.MsgHook = {
       enabled: false,
-      version: '0.5.0',
+      version: '0.5.1',
       addHook: (hook, validation) => {
         let id = 0
         // Generate random ID's until we get one that isn't taken
@@ -146,15 +146,14 @@ module.exports = class MsgHook {
             for (const hook of Object.values(this.hooks)) {
               // Validate hook if validation expression was passed
               const result =
-                typeof hook === 'object'
-                  ? hook[1].exec(msgHookEvent.msg)
-                  : undefined
+                typeof hook === 'object' ? hook[1].exec(msgHookEvent.msg) : true
+              const resultBool = typeof result === 'boolean'
               // Do not continue if validation failed
               if (!result) continue
               const newMessage =
                 typeof hook === 'function'
                   ? hook(msgHookEvent)
-                  : hook[0](msgHookEvent, result)
+                  : hook[0](msgHookEvent, !resultBool ? result : undefined)
               // If the type of the new message is an object, assuming types are honoured, it must be a Promise
               if (typeof newMessage === 'object') {
                 const newRes = await newMessage
