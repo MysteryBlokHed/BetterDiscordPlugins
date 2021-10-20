@@ -5,6 +5,8 @@ Requires the [MsgHook Plugin](https://github.com/MysteryBlokHed/BetterDiscordPlu
 
 ## Use
 
+### Starting Spam
+
 Send a message with either of the following formats to a Discord channel:
 
 ```text
@@ -18,4 +20,8 @@ or
 ```
 
 Where `123` is the interval to wait in seconds.
-Stop all spam threads by disabling and re-enabling the plugin.
+
+### Stopping Spam
+
+To stop spam, send `.spamstop` or `.spamstop()`. This will stop all running spammers.
+Spammers can also be stopped by disabling the plugin.
