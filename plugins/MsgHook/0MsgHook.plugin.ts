@@ -2,14 +2,14 @@
  * @name MsgHook
  * @author Adam Thompson-Sharpe
  * @description Run code when messages are sent or edited.
- * @version 0.4.2
+ * @version 0.5.1
  * @authorId 309628148201553920
  * @source https://github.com/MysteryBlokHed/BetterDiscordPlugins/blob/master/plugins/MsgHook
  * @updateUrl https://raw.githubusercontent.com/MysteryBlokHed/BetterDiscordPlugins/master/plugins/MsgHook/MsgHook.plugin.js
  */
 module.exports = class MsgHook {
   /** List of hooks to run */
-  hooks: Record<number, HookFunction> = {}
+  hooks: Record<number, HookFunction | [HookFunction, RegExp]> = {}
 
   /** Returns whether or not a request should be noticed by MsgHook */
   isMessageRequest(method: string, url: string): boolean {
@@ -29,14 +29,16 @@ module.exports = class MsgHook {
     // Add MsgHook object to window
     window.MsgHook = {
       enabled: false,
-      version: '0.4.1',
-      addHook: hook => {
+      version: '0.5.1',
+      addHook: (hook, validation) => {
         let id = 0
         // Generate random ID's until we get one that isn't taken
         do id = Math.floor(Math.random() * 10 ** 6)
         while (this.hooks.hasOwnProperty(id))
 
-        this.hooks[id] = hook
+        if (validation) this.hooks[id] = [hook, validation]
+        else this.hooks[id] = hook
+
         return id
       },
       removeHook: id => {
@@ -148,24 +150,36 @@ module.exports = class MsgHook {
               throw Error // Just used to exit the try/catch, running target.apply
             }
 
+            const msgHookEvent: MsgHookEvent = {
+              type: method,
+              msg: json.content,
+              id: id,
+              url: thisArg.__sentry_xhr__.url,
+              headers: thisArg.requestHeaders,
+              hasCommand(command) {
+                if (this.msg.startsWith(command + ' ')) {
+                  return this.msg.replace(new RegExp(`^${command} `), '')
+                } else return // This is needed to make TypeScript stop complaining about code paths for some reason
+              },
+            }
+
             // Run each hook
             for (const hook of Object.values(this.hooks)) {
-              const msgHookEvent: MsgHookEvent = {
-                type: method,
-                msg: json.content,
-                id: id,
-                url: thisArg.__sentry_xhr__.url,
-                headers: thisArg.requestHeaders,
-                hasCommand(command) {
-                  if (this.msg.startsWith(command + ' ')) {
-                    return this.msg.replace(new RegExp(`^${command} `), '')
-                  } else return // This is needed to make TypeScript stop complaining about code paths for some reason
-                },
-              }
-              const newMessage = hook(msgHookEvent)
+              // Validate hook if validation expression was passed
+              const result =
+                typeof hook === 'object' ? hook[1].exec(msgHookEvent.msg) : true
+
+              const resultBool = typeof result === 'boolean'
+
+              // Do not continue if validation failed
+              if (!result) continue
+
+              const newMessage =
+                typeof hook === 'function'
+                  ? hook(msgHookEvent)
+                  : hook[0](msgHookEvent, !resultBool ? result : undefined)
 
               // If the type of the new message is an object, assuming types are honoured, it must be a Promise
-              // (async function)
               if (typeof newMessage === 'object') {
                 const newRes = await newMessage
                 json.content = newRes ?? json.content
@@ -223,16 +237,20 @@ interface MsgHookEvent {
 }
 
 interface Window {
+  /** Allows plugins to interact with MsgHook */
   MsgHook: {
     /** Whether the MsgHook plugin is currently enabled */
     enabled: boolean
-    /** The version of MsgHook */
+    /** Semver-compliant version of MsgHook */
     version: string
     /**
      * Add a hook to MsgHook
+     * @param hook The hook to run
+     * @param validation A regular expression to validate the message.
+     * The hook won't be run if validation fails.
      * @returns A unique number to identify the hook
      */
-    addHook(hook: HookFunction): number
+    addHook(hook: HookFunction, validation?: RegExp): number
     /**
      * Remove a hook from MsgHook
      * @returns Whether the ID was an existant hook
@@ -257,4 +275,8 @@ interface MessageJson {
   tts?: boolean
 }
 
-type HookFunction = (e: MsgHookEvent) => string | void | Promise<string | void>
+type HookFunction = (
+  e: MsgHookEvent,
+  /** The result of the RegEx validation if it was passed to the hook */
+  validation?: RegExpExecArray
+) => string | void | Promise<string | void>
