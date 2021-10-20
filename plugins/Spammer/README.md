@@ -10,7 +10,7 @@ Requires the [MsgHook Plugin](https://github.com/MysteryBlokHed/BetterDiscordPlu
 Send a message with either of the following formats to a Discord channel:
 
 ```text
-.spam("Message to spam")
+.spam Message to spam
 ```
 
 or

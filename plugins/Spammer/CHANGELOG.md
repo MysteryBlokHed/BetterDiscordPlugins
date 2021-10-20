@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Changelogs are different for each plugin.
 
+## 0.2.0
+
+### Changed
+
+- Changed the RegEx used for the `.spam` command
+
 ## 0.1.0
 
 ### Added
