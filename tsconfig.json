@@ -10,6 +10,7 @@
     "noImplicitThis": true,
     "noImplicitReturns": true,
     "noImplicitOverride": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true
   }
 }
