@@ -2,7 +2,7 @@
  * @name Spammer
  * @author Adam Thompson-Sharpe
  * @description Spam messages in a Discord channel.
- * @version 0.2.0
+ * @version 0.2.1
  * @authorId 309628148201553920
  * @source https://github.com/MysteryBlokHed/BetterDiscordPlugins/blob/master/plugins/Spammer
  * @updateUrl https://raw.githubusercontent.com/MysteryBlokHed/BetterDiscordPlugins/master/plugins/Spammer/Spammer.plugin.js
@@ -21,7 +21,7 @@ module.exports = class Spammer {
     if (!window.MsgHook || !this.checkVersion(window.MsgHook.version, '0.4.0'))
       return
     const spamCommand =
-      /^\.spam(?:\s*\(\s*(?:"(.*)")\s*(?:,\s*(\d+)\s*)?,?\s*\))|(\s+.*)$/i
+      /^\.spam(?:(?:\s*\(\s*(?:"(.*)")\s*(?:,\s*(\d+)\s*)?,?\s*\))|(\s+.*))$/i
     const stopCommand = /^\.spam[-_]?stop(?:\(\s*\))?$/i
     // Hook to add spammer
     this.hooks.push(
