@@ -2,14 +2,15 @@
  * @name Spammer
  * @author Adam Thompson-Sharpe
  * @description Spam messages in a Discord channel.
- * @version 0.2.1
+ * @version 0.2.2
  * @authorId 309628148201553920
  * @source https://github.com/MysteryBlokHed/BetterDiscordPlugins/blob/master/plugins/Spammer
  * @updateUrl https://raw.githubusercontent.com/MysteryBlokHed/BetterDiscordPlugins/master/plugins/Spammer/Spammer.plugin.js
  */
 module.exports = class Spammer {
   constructor() {
-    this.spamIntervals = []
+    this.active = false
+    this.spamTimeouts = []
     this.hooks = []
   }
   checkVersion(current, minimum) {
@@ -18,6 +19,7 @@ module.exports = class Spammer {
     return currentMinor >= minimumMinor
   }
   start() {
+    this.active = true
     if (!window.MsgHook || !this.checkVersion(window.MsgHook.version, '0.4.0'))
       return
     const spamCommand =
@@ -30,19 +32,33 @@ module.exports = class Spammer {
         if (match) {
           const message = match[1] ?? match[3]
           const interval = parseInt(match[2] ?? 1500)
-          this.spamIntervals.push(
-            window.setInterval(() => {
-              fetch(e.url, {
-                method: 'POST',
-                headers: e.headers,
-                body: JSON.stringify({
-                  content: message,
-                  nonce: Date.now() * 4194304,
-                  tts: false,
-                }),
-              })
-            }, interval)
-          )
+          /** Run every interval */
+          const timeoutHandler = async () => {
+            if (!this.active) return
+            const res = await fetch(e.url, {
+              method: 'POST',
+              headers: e.headers,
+              body: JSON.stringify({
+                content: message,
+                nonce: Date.now() * 4194304,
+                tts: false,
+              }),
+            })
+            // Wait before retrying send in case of ratelimit
+            if (res.status === 429) {
+              res
+                .json()
+                .then(resJson =>
+                  window.setTimeout(timeoutHandler, resJson.retry_after * 1000)
+                )
+                .catch(() =>
+                  console.log('[Spammer] Failed to parse JSON response for 429')
+                )
+            } else {
+              window.setTimeout(timeoutHandler, interval)
+            }
+          }
+          window.setTimeout(timeoutHandler, interval)
           return message
         } else return
       })
@@ -52,17 +68,18 @@ module.exports = class Spammer {
       window.MsgHook.addHook(e => {
         const match = stopCommand.exec(e.msg)
         if (match) {
-          for (const interval of this.spamIntervals) clearInterval(interval)
-          this.spamIntervals = []
+          for (const timeout of this.spamTimeouts) clearInterval(timeout)
+          this.spamTimeouts = []
           return ''
         } else return
       })
     )
   }
   stop() {
+    this.active = false
     if (!window.MsgHook || !this.checkVersion(window.MsgHook.version, '0.4.0'))
       return
-    for (const interval of this.spamIntervals) clearInterval(interval)
+    // for (const interval of this.spamIntervals) clearInterval(interval)
     for (const hook of this.hooks) window.MsgHook.removeHook(hook)
   }
 }
