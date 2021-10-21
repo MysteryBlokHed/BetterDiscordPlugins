@@ -78,8 +78,7 @@ module.exports = class Spammer {
       window.MsgHook.addHook(e => {
         const match = stopCommand.exec(e.msg)
         if (match) {
-          for (const timeout of this.spamTimeouts) clearTimeout(timeout)
-          this.spamTimeouts = []
+          this.stopSpammers()
           return ''
         } else return
       })
@@ -89,8 +88,12 @@ module.exports = class Spammer {
     this.active = false
     if (!window.MsgHook || !this.checkVersion(window.MsgHook.version, '0.4.0'))
       return
-    // for (const interval of this.spamIntervals) clearInterval(interval)
+    this.stopSpammers()
     for (const hook of this.hooks) window.MsgHook.removeHook(hook)
+  }
+  stopSpammers() {
+    for (const timeout of this.spamTimeouts) clearTimeout(timeout)
+    this.spamTimeouts = []
   }
 }
 /// <reference types="../MsgHook/0MsgHook.plugin.ts" />
