@@ -1,0 +1,22 @@
+image: node:latest
+
+stages:
+  - lint
+  - build
+
+cache:
+  paths:
+    - node_modules/
+    - .yarn-cache/
+
+lint:
+  stage: lint
+  script:
+    - yarn install --cache-folder .yarn-cache
+    - yarn prettier --check
+
+test_build:
+  stage: build
+  script:
+    - yarn install --cache-folder .yarn-cache
+    - yarn build
