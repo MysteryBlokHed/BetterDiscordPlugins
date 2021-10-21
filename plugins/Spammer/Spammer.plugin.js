@@ -32,6 +32,9 @@ module.exports = class Spammer {
         if (match) {
           const message = match[1] ?? match[3]
           const interval = parseInt(match[2] ?? 1500)
+          /** Used to keep track of interval handles */
+          const id = this.spamTimeouts.length
+          this.spamTimeouts.push(0)
           /** Run every interval */
           const timeoutHandler = async () => {
             if (!this.active) return
@@ -48,14 +51,21 @@ module.exports = class Spammer {
             if (res.status === 429) {
               res
                 .json()
-                .then(resJson =>
-                  window.setTimeout(timeoutHandler, resJson.retry_after * 1000)
+                .then(
+                  resJson =>
+                    (this.spamTimeouts[id] = window.setTimeout(
+                      timeoutHandler,
+                      resJson.retry_after * 1000
+                    ))
                 )
                 .catch(() =>
                   console.log('[Spammer] Failed to parse JSON response for 429')
                 )
             } else {
-              window.setTimeout(timeoutHandler, interval)
+              this.spamTimeouts[id] = window.setTimeout(
+                timeoutHandler,
+                interval
+              )
             }
           }
           window.setTimeout(timeoutHandler, interval)
@@ -68,7 +78,7 @@ module.exports = class Spammer {
       window.MsgHook.addHook(e => {
         const match = stopCommand.exec(e.msg)
         if (match) {
-          for (const timeout of this.spamTimeouts) clearInterval(timeout)
+          for (const timeout of this.spamTimeouts) clearTimeout(timeout)
           this.spamTimeouts = []
           return ''
         } else return
