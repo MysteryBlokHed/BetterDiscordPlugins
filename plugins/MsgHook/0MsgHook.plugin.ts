@@ -4,8 +4,8 @@
  * @description Run code when messages are sent or edited.
  * @version 0.5.1
  * @authorId 309628148201553920
- * @source https://github.com/MysteryBlokHed/BetterDiscordPlugins/blob/master/plugins/MsgHook
- * @updateUrl https://raw.githubusercontent.com/MysteryBlokHed/BetterDiscordPlugins/master/plugins/MsgHook/MsgHook.plugin.js
+ * @source https://github.com/MysteryBlokHed/BetterDiscordPlugins/blob/main/plugins/MsgHook
+ * @updateUrl https://raw.githubusercontent.com/MysteryBlokHed/BetterDiscordPlugins/main/plugins/MsgHook/MsgHook.plugin.js
  */
 module.exports = class MsgHook {
   /** List of hooks to run */

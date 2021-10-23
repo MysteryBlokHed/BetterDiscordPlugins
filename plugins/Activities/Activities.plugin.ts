@@ -4,8 +4,8 @@
  * @description Start Discord Activities with friends.
  * @version 0.1.1
  * @authorId 309628148201553920
- * @source https://github.com/MysteryBlokHed/BetterDiscordPlugins/blob/master/plugins/Activities
- * @updateUrl https://raw.githubusercontent.com/MysteryBlokHed/BetterDiscordPlugins/master/plugins/Activities/Activities.plugin.js
+ * @source https://github.com/MysteryBlokHed/BetterDiscordPlugins/blob/main/plugins/Activities
+ * @updateUrl https://raw.githubusercontent.com/MysteryBlokHed/BetterDiscordPlugins/main/plugins/Activities/Activities.plugin.js
  */
 
 module.exports = class Activities {
@@ -37,7 +37,7 @@ module.exports = class Activities {
       return BdApi.alert(
         'Activities',
         `Activities requires the MsgHook plugin to work. Download it here:
-        https://github.com/MysteryBlokHed/BetterDiscordPlugins/blob/master/plugins/MsgHook`
+        https://github.com/MysteryBlokHed/BetterDiscordPlugins/blob/main/plugins/MsgHook`
       )
 
     // Check MsgHook version

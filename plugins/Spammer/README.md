@@ -1,7 +1,7 @@
 # Spammer
 
 Spam messages to any Discord channel.
-Requires the [MsgHook Plugin](https://github.com/MysteryBlokHed/BetterDiscordPlugins/blob/master/plugins/MsgHook).
+Requires the [MsgHook Plugin](https://github.com/MysteryBlokHed/BetterDiscordPlugins/blob/main/plugins/MsgHook).
 
 ## Use
 

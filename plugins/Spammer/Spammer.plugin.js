@@ -4,8 +4,8 @@
  * @description Spam messages in a Discord channel.
  * @version 0.2.2
  * @authorId 309628148201553920
- * @source https://github.com/MysteryBlokHed/BetterDiscordPlugins/blob/master/plugins/Spammer
- * @updateUrl https://raw.githubusercontent.com/MysteryBlokHed/BetterDiscordPlugins/master/plugins/Spammer/Spammer.plugin.js
+ * @source https://github.com/MysteryBlokHed/BetterDiscordPlugins/blob/main/plugins/Spammer
+ * @updateUrl https://raw.githubusercontent.com/MysteryBlokHed/BetterDiscordPlugins/main/plugins/Spammer/Spammer.plugin.js
  */
 module.exports = class Spammer {
   constructor() {

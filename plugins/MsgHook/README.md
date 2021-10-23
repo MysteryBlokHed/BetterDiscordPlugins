@@ -22,7 +22,7 @@ if (!MsgHook)
   BdApi.alert(
     'Plugin',
     `This plugin requires the MsgHook plugin to work. Download it here:
-    https://github.com/MysteryBlokHed/BetterDiscordPlugins/blob/master/plugins/MsgHook`
+    https://github.com/MysteryBlokHed/BetterDiscordPlugins/blob/main/plugins/MsgHook`
   )
 ```
 
