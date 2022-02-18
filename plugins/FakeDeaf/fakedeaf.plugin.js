@@ -126,7 +126,7 @@ module.exports = class FakeDeaf {
       return "success"
     }
     else {
-      return "default"
+      return ""
     }
   }
 
