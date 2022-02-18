@@ -88,4 +88,5 @@ module.exports = class Activities {
     window.MsgHook.removeHook(this.hookID)
   }
 }
+export {}
 /// <reference path="../MsgHook/0MsgHook.plugin.ts" />

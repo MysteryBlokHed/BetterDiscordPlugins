@@ -1,3 +1,5 @@
+import type { BdPlugin } from '@bandagedbd/bdapi'
+
 /**
  * @name MsgHook
  * @author Adam Thompson-Sharpe
@@ -7,7 +9,7 @@
  * @source https://github.com/MysteryBlokHed/BetterDiscordPlugins/blob/main/plugins/MsgHook
  * @updateUrl https://raw.githubusercontent.com/MysteryBlokHed/BetterDiscordPlugins/main/plugins/MsgHook/MsgHook.plugin.js
  */
-module.exports = class MsgHook {
+module.exports = class MsgHook implements BdPlugin {
   /** List of hooks to run */
   hooks: Record<number, HookFunction | [HookFunction, RegExp]> = {}
 
@@ -236,26 +238,28 @@ interface MsgHookEvent {
   hasCommand(command: string): string | void
 }
 
-interface Window {
-  /** Allows plugins to interact with MsgHook */
-  MsgHook: {
-    /** Whether the MsgHook plugin is currently enabled */
-    enabled: boolean
-    /** Semver-compliant version of MsgHook */
-    version: string
-    /**
-     * Add a hook to MsgHook
-     * @param hook The hook to run
-     * @param validation A regular expression to validate the message.
-     * The hook won't be run if validation fails.
-     * @returns A unique number to identify the hook
-     */
-    addHook(hook: HookFunction, validation?: RegExp): number
-    /**
-     * Remove a hook from MsgHook
-     * @returns Whether the ID was an existant hook
-     */
-    removeHook(id: number): boolean
+declare global {
+  interface Window {
+    /** Allows plugins to interact with MsgHook */
+    MsgHook: {
+      /** Whether the MsgHook plugin is currently enabled */
+      enabled: boolean
+      /** Semver-compliant version of MsgHook */
+      version: string
+      /**
+       * Add a hook to MsgHook
+       * @param hook The hook to run
+       * @param validation A regular expression to validate the message.
+       * The hook won't be run if validation fails.
+       * @returns A unique number to identify the hook
+       */
+      addHook(hook: HookFunction, validation?: RegExp): number
+      /**
+       * Remove a hook from MsgHook
+       * @returns Whether the ID was an existant hook
+       */
+      removeHook(id: number): boolean
+    }
   }
 }
 
