@@ -37,25 +37,24 @@ module.exports = class FakeDeaf {
         switch (e.key) {
           case 'F9':
             this.fakeMute = !this.fakeMute
-            BdApi.alert(
-              'FakeDeaf',
-              `Fake Mute is now ${this.fakeMute ? 'enabled' : 'disabled'}.`
+            BdApi.showToast(
+              `Fake Mute is now ${this.fakeMute ? 'enabled' : 'disabled'}.`,
+              {type:this.infoType(this.fakeMute)}
             )
             break
           case 'F10':
             this.fakeDeafen = !this.fakeDeafen
-            BdApi.alert(
-              'FakeDeaf',
-              `Fake Deaf is now ${this.fakeDeafen ? 'enabled' : 'disabled'}.`
+            BdApi.showToast(
+              `Fake Deaf is now ${this.fakeDeafen ? 'enabled' : 'disabled'}.`,
+              {type:this.infoType(this.fakeDeafen)}
             )
             break
           case 'F11':
             this.newJoinMute = !this.newJoinMute
-            BdApi.alert(
-              'FakeDeaf',
+            BdApi.showToast(
               `New Join Mute is now ${
-                this.newJoinMute ? 'enabled' : 'disabled'
-              }.`
+                this.newJoinMute ? 'enabled' : 'disabled'}.`,
+                {type:this.infoType(this.newJoinMute)}
             )
             this.updateNewJoinMuteMessage()
             break
@@ -120,6 +119,15 @@ module.exports = class FakeDeaf {
 
   stop() {
     this.fakeDeafEnabled = false
+  }
+
+  infoType(statusBool) {
+    if (statusBool) {
+      return "success"
+    }
+    else {
+      return "default"
+    }
   }
 
   updateNewJoinMuteMessage() {
