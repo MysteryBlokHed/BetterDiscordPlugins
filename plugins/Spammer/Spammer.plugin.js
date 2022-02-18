@@ -100,5 +100,4 @@ module.exports = class Spammer {
     this.spamTimeouts = []
   }
 }
-export {}
 /// <reference types="../MsgHook/0MsgHook.plugin.ts" />

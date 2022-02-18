@@ -1,5 +1,3 @@
-import type { BdPlugin } from '@bandagedbd/bdapi'
-
 /**
  * @name Activities
  * @author Adam Thompson-Sharpe
@@ -9,7 +7,8 @@ import type { BdPlugin } from '@bandagedbd/bdapi'
  * @source https://github.com/MysteryBlokHed/BetterDiscordPlugins/blob/main/plugins/Activities
  * @updateUrl https://raw.githubusercontent.com/MysteryBlokHed/BetterDiscordPlugins/main/plugins/Activities/Activities.plugin.js
  */
-module.exports = class Activities implements BdPlugin {
+
+module.exports = class Activities {
   activities: Record<string, string> = {
     youtube: '880218394199220334',
     youtubedev: '880218832743055411',

@@ -194,4 +194,3 @@ var MessageType
    */
   MessageType[(MessageType['Other'] = 2)] = 'Other'
 })(MessageType || (MessageType = {}))
-export {}

@@ -1,5 +1,3 @@
-import type { BdPlugin } from '@bandagedbd/bdapi'
-
 /**
  * @name Spammer
  * @author Adam Thompson-Sharpe
@@ -9,7 +7,8 @@ import type { BdPlugin } from '@bandagedbd/bdapi'
  * @source https://github.com/MysteryBlokHed/BetterDiscordPlugins/blob/main/plugins/Spammer
  * @updateUrl https://raw.githubusercontent.com/MysteryBlokHed/BetterDiscordPlugins/main/plugins/Spammer/Spammer.plugin.js
  */
-module.exports = class Spammer implements BdPlugin {
+
+module.exports = class Spammer {
   active: boolean = false
   spamTimeouts: number[] = []
   hooks: number[] = []
