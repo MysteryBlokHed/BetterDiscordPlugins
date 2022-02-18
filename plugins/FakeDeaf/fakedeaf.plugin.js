@@ -2,7 +2,7 @@
  * @name FakeDeaf
  * @author Adam Thompson-Sharpe
  * @description Fake being deafened or muted on Discord while still being able to talk.
- * @version 0.2.1
+ * @version 0.2.2
  * @authorId 309628148201553920
  * @source https://github.com/MysteryBlokHed/BetterDiscordPlugins/blob/main/plugins/FakeDeaf
  * @updateUrl https://raw.githubusercontent.com/MysteryBlokHed/BetterDiscordPlugins/main/plugins/FakeDeaf/fakedeaf.plugin.js
