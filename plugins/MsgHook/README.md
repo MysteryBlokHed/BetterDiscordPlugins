@@ -58,8 +58,7 @@ This gives you better typing and in-editor documentation.
 
 ```typescript
 /// <reference path="path/to/0MsgHook.plugin.ts" />
-const MsgHook = (window as MsgHookWindow).MsgHook
-MsgHook.addHook(e => {
+window.MsgHook.addHook(e => {
   return `${e.msg} - TypeScript hook!`
 })
 ```
