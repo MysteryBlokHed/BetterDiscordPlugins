@@ -9,6 +9,10 @@ Changelogs are different for each plugin.
 
 ## 0.5.1
 
+### Changed
+
+- Changed how the global MsgHook object is declared
+
 ### Fixed
 
 - Fixed rejected Promises stopping MsgHook from working entirely

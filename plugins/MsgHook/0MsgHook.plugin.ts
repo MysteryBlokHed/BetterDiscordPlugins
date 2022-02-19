@@ -264,6 +264,9 @@ interface Window {
   }
 }
 
+/** Allows plugins to interact with MsgHook */
+declare const MsgHook: Window['MsgHook']
+
 enum MessageType {
   Send,
   Edit,

@@ -162,7 +162,8 @@ module.exports = class MsgHook {
                     reason
                   )
                 })
-                json.content = newRes ?? json.content
+                json.content =
+                  newRes !== null && newRes !== void 0 ? newRes : json.content
               } else {
                 json.content =
                   newMessage !== null && newMessage !== void 0
