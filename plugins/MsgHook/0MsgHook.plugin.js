@@ -28,7 +28,7 @@ module.exports = class MsgHook {
     // Add MsgHook object to window
     window.MsgHook = {
       enabled: false,
-      version: '0.5.1',
+      version: '0.5.2',
       addHook: (hook, validation) => {
         let id = 0
         // Generate random ID's until we get one that isn't taken
