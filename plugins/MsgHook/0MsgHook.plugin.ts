@@ -2,7 +2,7 @@
  * @name MsgHook
  * @author Adam Thompson-Sharpe
  * @description Run code when messages are sent or edited.
- * @version 0.5.1
+ * @version 0.5.2
  * @authorId 309628148201553920
  * @source https://github.com/MysteryBlokHed/BetterDiscordPlugins/blob/main/plugins/MsgHook
  * @updateUrl https://raw.githubusercontent.com/MysteryBlokHed/BetterDiscordPlugins/main/plugins/MsgHook/MsgHook.plugin.js
@@ -29,7 +29,7 @@ module.exports = class MsgHook {
     // Add MsgHook object to window
     window.MsgHook = {
       enabled: false,
-      version: '0.5.1',
+      version: '0.5.2',
       addHook: (hook, validation) => {
         let id = 0
         // Generate random ID's until we get one that isn't taken
@@ -104,10 +104,11 @@ module.exports = class MsgHook {
                 thisArg.__sentry_xhr__.method,
                 thisArg.__sentry_xhr__.url
               )
-            )
-              throw Error
+            ) {
+              throw new Error('Request is not for a message')
+            }
 
-            let json = JSON.parse(args[0] as string) as MessageJson
+            const json = JSON.parse(args[0] as string) as MessageJson
 
             // This really ugly ternary just means use MessageType.Send on POST,
             // MessageType.Edit on PATCH, and MessageType.Other for whatever else
@@ -147,7 +148,8 @@ module.exports = class MsgHook {
               const split = thisArg.__sentry_xhr__.url.split('/')
               id = split[split.length - 1]
             } else {
-              throw Error // Just used to exit the try/catch, running target.apply
+              // Just used to exit the try/catch, running target.apply
+              throw new Error('Exiting try/catch intentionally')
             }
 
             const msgHookEvent: MsgHookEvent = {
@@ -165,6 +167,7 @@ module.exports = class MsgHook {
 
             // Run each hook
             for (const hook of Object.values(this.hooks)) {
+              msgHookEvent.msg = json.content
               // Validate hook if validation expression was passed
               const result =
                 typeof hook === 'object' ? hook[1].exec(msgHookEvent.msg) : true
