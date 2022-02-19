@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Changelogs are different for each plugin.
 
+## 0.5.1
+
+### Fixed
+
+- Fixed rejected Promises stopping MsgHook from working entirely
+
 ## 0.5.0
 
 ### Added

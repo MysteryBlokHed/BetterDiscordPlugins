@@ -156,7 +156,12 @@ module.exports = class MsgHook {
                   : hook[0](msgHookEvent, !resultBool ? result : undefined)
               // If the type of the new message is an object, assuming types are honoured, it must be a Promise
               if (typeof newMessage === 'object') {
-                const newRes = await newMessage
+                const newRes = await newMessage.catch(reason => {
+                  console.error(
+                    "[MsgHook] A hook's Promise was rejected! Reason:",
+                    reason
+                  )
+                })
                 json.content = newRes ?? json.content
               } else {
                 json.content = newMessage ?? json.content
