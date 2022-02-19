@@ -181,7 +181,12 @@ module.exports = class MsgHook {
 
               // If the type of the new message is an object, assuming types are honoured, it must be a Promise
               if (typeof newMessage === 'object') {
-                const newRes = await newMessage
+                const newRes = await newMessage.catch(reason => {
+                  console.error(
+                    "[MsgHook] A hook's Promise was rejected! Reason:",
+                    reason
+                  )
+                })
                 json.content = newRes ?? json.content
               } else {
                 json.content = newMessage ?? json.content
@@ -258,6 +263,9 @@ interface Window {
     removeHook(id: number): boolean
   }
 }
+
+/** Allows plugins to interact with MsgHook */
+declare const MsgHook: Window['MsgHook']
 
 enum MessageType {
   Send,
