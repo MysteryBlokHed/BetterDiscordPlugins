@@ -8,8 +8,8 @@ Note that this plugin does not currently support hooks for messages sent, edited
 
 ### Making a plugin that uses MsgHook
 
-To make your plugin use MsgHook, you can check if the `window.MsgHook` object exists.
-To check if MsgHook is enabled, you can see if `window.MsgHook.enabled` is true.
+To make your plugin use MsgHook, you can check if the `MsgHook` object exists.
+To check if MsgHook is enabled, you can see if `MsgHook.enabled` is true.
 
 ```javascript
 if (window.MsgHook && window.MsgHook.enabled) // True if MsgHook is installed and enabled
@@ -18,21 +18,23 @@ if (window.MsgHook && window.MsgHook.enabled) // True if MsgHook is installed an
 If MsgHook is not installed, you could prompt the user with an install link:
 
 ```javascript
-if (!MsgHook)
+if (!MsgHook && !window.msgHookPrompted) {
   BdApi.alert(
-    'Plugin',
-    `This plugin requires the MsgHook plugin to work. Download it here:
+    'MsgHook',
+    `One or more plugins require the MsgHook plugin to work. Download it here:
     https://github.com/MysteryBlokHed/BetterDiscordPlugins/blob/main/plugins/MsgHook`
   )
+  window.msgHookPrompted = true
+}
 ```
 
 ### Adding hooks
 
 The plugin creates a window variable called `MsgHook`.
-You can add your own hooks with `window.MsgHook.addHook`:
+You can add your own hooks with `MsgHook.addHook`:
 
 ```javascript
-window.MsgHook.addHook(e => {
+MsgHook.addHook(e => {
   // your code here
 })
 ```
@@ -58,7 +60,7 @@ This gives you better typing and in-editor documentation.
 
 ```typescript
 /// <reference path="path/to/0MsgHook.plugin.ts" />
-window.MsgHook.addHook(e => {
+MsgHook.addHook(e => {
   return `${e.msg} - TypeScript hook!`
 })
 ```
@@ -71,7 +73,7 @@ Here's an example hook that replaces the message content
 when the message starts with `.sayhi`:
 
 ```javascript
-window.MsgHook.addHook(e => {
+MsgHook.addHook(e => {
   // Check if message starts with '.sayhi'. If it does, get the message without it
   const msg = e.hasCommand('.sayhi')
   if (msg) return `Hello, ${msg}!`
@@ -85,7 +87,7 @@ Now, sending the message `.sayhi World` would change the message to `Hello, Worl
 Here's how you might run something when a message was edited:
 
 ```javascript
-window.MsgHook.addHook(e => {
+MsgHook.addHook(e => {
   if (e.type === 1) {
     // Code for message edit goes here
   }
