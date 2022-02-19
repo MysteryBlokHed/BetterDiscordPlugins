@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Changelogs are different for each plugin.
 
+## 0.5.2
+
+### Fixed
+
+- Fixed a problem where messages updated from past hooks would not be properly passed on to future ones
+
 ## 0.5.1
 
 ### Changed
