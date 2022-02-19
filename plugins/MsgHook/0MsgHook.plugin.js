@@ -69,7 +69,7 @@ module.exports = class MsgHook {
             if (!thisArg.requestHeaders) thisArg.requestHeaders = {}
             thisArg.requestHeaders[args[0]] = args[1]
           }
-        } catch {}
+        } catch (_a) {}
         target.apply(thisArg, args)
       },
     }
@@ -112,7 +112,7 @@ module.exports = class MsgHook {
                   if (thisArg.readyState === XMLHttpRequest.DONE) {
                     try {
                       resolve(JSON.parse(thisArg.responseText).id)
-                    } catch {
+                    } catch (_a) {
                       /*
                        * Commented out right now since there are more POSTs and PATCHes than just for message-sending,
                        * meaning that there would be a lot of incorrect rejections due to some responses not having id property
@@ -164,11 +164,14 @@ module.exports = class MsgHook {
                 })
                 json.content = newRes ?? json.content
               } else {
-                json.content = newMessage ?? json.content
+                json.content =
+                  newMessage !== null && newMessage !== void 0
+                    ? newMessage
+                    : json.content
               }
             }
             args[0] = JSON.stringify(json)
-          } catch {}
+          } catch (_a) {}
         }
         target.apply(thisArg, args)
       },

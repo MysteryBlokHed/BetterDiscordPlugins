@@ -1,13 +1,14 @@
 {
   "$schema": "https://json.schemastore.org/package",
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch",
-    "lint": "prettier \"**/*.{js,ts,md,json}\""
+    "build": "tsc && yarn prettier --write **/*.js",
+    "dev": "nodemon -w **/* -e ts --exec \"yarn build || exit 1\"",
+    "lint": "prettier \"**/*.{js,ts,json,md,yml}\""
   },
   "devDependencies": {
     "@types/bandagedbd__bdapi": "^0.3.2",
     "@types/node": "^16.10.2",
+    "nodemon": "^2.0.15",
     "prettier": "^2.4.1",
     "typescript": "^4.4.3"
   }
